@@ -92,10 +92,6 @@ birds_meta <- birds_meta |>
   relocate(distance_km, .after = "lat_stop")
 ```
 
-```{r birds_NAs, eval = TRUE, include = T}
-naniar::vis_miss(birds_meta)
-```
-
 ```{r birds_map, eval = TRUE, include = T}
 tmp <- birds_meta |> 
   filter(!is.na(lon_start)) |> 
@@ -150,6 +146,9 @@ birds_meta |>
              contains("hrs") ~ "Time (hrs)")
 ```
 
+```{r birds_NAs, eval = TRUE, include = T}
+naniar::vis_miss(birds_meta)
+```
 
 ```{r birds_export, eval = F}
 bq_table_create(paste0("pristine-seas.metadata.",exp_id, "_birds"), 

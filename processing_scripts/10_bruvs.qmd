@@ -35,7 +35,7 @@ bq_connection <- DBI::dbConnect(bigrquery::bigquery(), project = "pristine-seas"
 
 # Metadata
 
-```{r bruvs, eval = TRUE,}
+```{r bruvs, eval = TRUE}
 bruvs_fieldbook <- readxl::read_xlsx(file.path(exp_path, 
                                         paste0("data/primary/raw/bruvs/",
                                                exp_id,
@@ -50,10 +50,6 @@ bruvs_meta <- bruvs_fieldbook |>
          local_time = hms::as_hms(time_in),
          team_lead = "Juan Mayorga") |> 
   select(expedition, method, ps_site_id, location, date, local_time, lat, lon, depth_m, bottom_type,  rig, cam_r, cam_l,  team_lead, notes, everything(), -time_in, -species_scan)
-```
-
-```{r bruvs_NAs, eval = TRUE, include = T}
-naniar::vis_miss(bruvs_meta)
 
 bruvs_meta <- bruvs_meta |> 
   replace_na(list(depth_m = 20))
@@ -113,6 +109,10 @@ bruvs_meta |>
   cols_label("n_stations" ~ "# Deployments") |> 
   cols_label_with(fn = ~str_extract(.x, "[^_]+") |> 
                     str_to_sentence()) 
+```
+
+```{r bruvs_NAs, eval = TRUE, include = T}
+naniar::vis_miss(bruvs_meta)
 ```
 
 ```{r bbruvs_export, eval = F}

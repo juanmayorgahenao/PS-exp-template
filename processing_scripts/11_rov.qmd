@@ -72,10 +72,6 @@ rov_meta <- rov_dives |>
   relocate(c(notes, highlights, team_lead), .after = last_col())
 ```
 
-```{r rov_NAs, eval = TRUE, include = T}
-naniar::vis_miss(rov_meta)
-```
-
 ```{r rov_map, eval = TRUE, include = T}
 tmp <- rov_meta |> 
   filter(!is.na(max_depth_m)) |> 
@@ -132,6 +128,10 @@ rov_meta |>
   cols_label("n_stations" ~ "# dives") |> 
   cols_label_with(fn = ~str_extract(.x, "[^_]+") |> 
                     str_to_sentence()) 
+```
+
+```{r rov_NAs, eval = TRUE, include = T}
+naniar::vis_miss(rov_meta)
 ```
 
 ```{r rov_export, eval = F}

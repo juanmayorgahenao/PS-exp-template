@@ -1,5 +1,5 @@
 ---
-title: "Vessel track"
+title: "The journey"
 number-sections: false
 date: today
 format: 
@@ -33,6 +33,10 @@ bq_connection <- DBI::dbConnect(bigrquery::bigquery(), project = "pristine-seas"
 ```
 
 ```{r track, eval = TRUE}
+expedition_meta <- tbl(bq_connection, "metadata.PLW_2024") |> 
+  filter(location != "Transit") |> 
+  collect()
+
 #Argo mmsi: 312208000
 #Argo callsign: V3OW5
 
@@ -40,14 +44,26 @@ argo_track <- sf::st_read(file.path(exp_path,
                                     "data/primary/raw/argo-route/data.geojson")) 
 
 argo_nm <- round((st_length(argo_track)/10^3)*0.539957) # NM
+
+
+
+
+
+expedition_meta |> 
+  #group_by(location) |> 
+  summarize(n_distinct(date))
 ```
 
-The Argo traveled a total of `r round(as.numeric(sum(argo_nm)*1.852))` km during this expedition. 
+The first half of the expedition surveyed the Southwest Islands of Palau. The first group (Sonsorol state) comprises four islands: Sonsorol, Fanna, Pulo Anna and Merir. Here our team spent a total of `r length(unique(expedition_meta$date[expedition_meta$location %in% c("Merir", "Sonsorol", "Fanna", "Pulo Anna")]))` working days surveying the island's rich marine habitats. Further south, Tobi and Helen's reef make up Hatohobei State. Here, we spent a total of `r `length(unique(expedition_meta$date[expedition_meta$location %in% c("Tobi", "Helen")]))` working days
+
+The expedition then surveyed the deep sea and pelagic environments in the offshore for a total of `r length(unique(expedition_meta$date[!expedition_meta$location %in% c("Merir", "Sonsorol", "Fanna", "Pulo Anna", "Tobi", "Helen")]))` working days. Very little is known about the deep sea ecosystems of Palau, and it is of great interest to the Palauan government, communities, and schools. We conducted biodiversity surveys in offshore habitats, aiming to systematically survey along a full depth gradient, from 200 to 6000 m, to build a unique glimpse of Palauan deep sea biodiversity spanning distinct depth zones within a short distance (within about 10 nautical miles). 
+
+Overall, the Argo traveled a total of `r round(as.numeric(sum(argo_nm)*1.852))` km during this expedition. 
 
 ```{r track_map, eval = TRUE, include = T}
 #| label: fig-track
 #| fig-cap: "RV Argo track. Based on the ship's AIS."
-#| cap-location: margin
+#| cap-location: bottom
 mapview::mapview(argo_track, 
                  map.types = c("Esri.WorldImagery"), 
                  layer.name = c("RV ARGO"), 

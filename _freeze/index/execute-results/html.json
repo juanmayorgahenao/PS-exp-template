@@ -1,9 +1,11 @@
 {
-  "hash": "2c1b8d022598dabac1c7687aadf9ac4a",
+  "hash": "1c55f87154cca8f7cf85125e61220fb1",
   "result": {
     "engine": "knitr",
-    "markdown": "---\ntitle: \"Overview\"\nauthor: \"Juan Mayorga\"\nnumber-sections: false\ndate: today\ntheme: cosmo\nformat: \n  html:\n    self-contained: true\n    code-fold: true\n    toc: true\n    toc-location: right\n---\n\n::: {.cell}\n\n:::\n\n\nthis is what the expedition is about\n\n![Expedition area](ps-exp-map.png)\n\n\n",
-    "supporting": [],
+    "markdown": "---\ntitle: \"Overview\"\nnumber-sections: false\ndate: today\ntheme: cosmo\nformat: \n  html:\n    self-contained: true\n    code-fold: true\n    toc: true\n    toc-location: right\n---\n\n::: {.cell}\n\n:::\n\n\nThe Government of Palau has established a marine spatial planning (MSP) process to identify the nation's priorities for biodiversity conservation while ensuring a thriving local fishing economy. National Geographic Society's Pristine Seas has partnered with the Palauan government and with local communities to support this effort and conducted an expedition to study and document the condition of Palau's waters. The goals of this expedition are to provide information to support the MSP process, fill data gaps, and produce compelling media to highlight Palau’s unique and vibrant natural environment and its people and their culture.\n\n![Expedition area](ps-exp-map.png)\n\n\n",
+    "supporting": [
+      "index_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

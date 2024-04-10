@@ -55,10 +55,6 @@ dscm_meta <- dscm_fieldbook |>
          depth_m, bottom_temp_c, bottom_type, dscm_id, gtr_type,bait_type, bait_kg, team_lead, notes, highlights)
 ```
 
-```{r dscm_NAs, eval = TRUE, include = T}
-naniar::vis_miss(dscm_meta)
-```
-
 ```{r dscm_map, eval = TRUE, include = T}
 tmp <- dscm_meta |> 
   filter(!is.na(depth_m)) |> 
@@ -119,6 +115,9 @@ dscm_meta |>
                     str_to_sentence()) 
 ```
 
+```{r dscm_NAs, eval = TRUE, include = T}
+naniar::vis_miss(dscm_meta)
+```
 
 ```{r dscm_export, eval = F}
 bq_table_create(paste0("pristine-seas.metadata.",exp_id, "_dscm"), 

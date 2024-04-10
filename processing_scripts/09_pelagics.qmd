@@ -74,10 +74,6 @@ pbruvs_meta <- pbruvs_meta |>
   relocate(drift_m, .after = "lat_out")
 ```
 
-```{r pbruvs_NAs, eval = TRUE, include = T}
-naniar::vis_miss(pbruvs_meta)
-```
-
 ```{r pbruv_map, eval = TRUE, include = T}
 tmp <- pbruvs_meta |> 
   mutate(lon = coalesce(lon_in, lon_out),
@@ -130,6 +126,9 @@ pbruvs_meta |>
              "total_drift_km" ~ "Total drift (km)") 
 ```
 
+```{r pbruvs_NAs, eval = TRUE, include = T}
+naniar::vis_miss(pbruvs_meta)
+```
 
 ```{r pbruv_export, eval = F}
 bq_table_create(paste0("pristine-seas.metadata.",exp_id, "_pbruvs"), 

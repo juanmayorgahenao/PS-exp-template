@@ -1,6 +1,5 @@
 ---
 title: "Overview"
-author: "Juan Mayorga"
 number-sections: false
 date: today
 theme: cosmo
@@ -34,7 +33,7 @@ bigrquery::bq_auth(email = "marine.data.science@ngs.org")
 bq_connection <- DBI::dbConnect(bigrquery::bigquery(), project = "pristine-seas")
 ```
 
-this is what the expedition is about
+The Government of Palau has established a marine spatial planning (MSP) process to identify the nation's priorities for biodiversity conservation while ensuring a thriving local fishing economy. National Geographic Society's Pristine Seas has partnered with the Palauan government and with local communities to support this effort and conducted an expedition to study and document the condition of Palau's waters. The goals of this expedition are to provide information to support the MSP process, fill data gaps, and produce compelling media to highlight Palau’s unique and vibrant natural environment and its people and their culture.
 
 ![Expedition area](ps-exp-map.png)
 

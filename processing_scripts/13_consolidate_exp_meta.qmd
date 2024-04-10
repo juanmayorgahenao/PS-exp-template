@@ -122,7 +122,9 @@ bigrquery::bq_table_upload(paste0("pristine-seas.metadata.", exp_id),
 ```
 
 ```{r exp_meta_tbl, eval = T, include = T}
-#| tbl-cap-location: margin
+#| label: tbl-meta
+#| tbl-cap: Summary of workstations by location and method
+#| tbl-cap-location: top
 #| column: page-right
 
 expedition_meta <- tbl(bq_connection, "metadata.PLW_2024") |> 
@@ -153,14 +155,14 @@ expedition_meta |>
 
 ```{r exp_meta_map, eval = T, include = T}
 #| label: fig-exp-meta
-#| fig-cap: "Work sites"
+#| fig-cap: "Work sites by method used during the expedition."
 #| cap-location: margin
 tmp <- expedition_meta |> 
   filter(!is.na(lon)) |> 
   collect() |> 
   st_as_sf(coords = c("lon", "lat"), crs = 4326) |> 
   group_by(method, ps_site_id, location, geometry) |> 
-  summarize(strata = paste0(depth_m, "m",collapse = ", ")) |> 
+  summarize(strata = if_else(is.na(depth_m), NA_character_, paste0(depth_m, "m",collapse = ", "))) |> 
   st_jitter(factor = 0.000007)
 
 mapview::mapview(tmp ,
