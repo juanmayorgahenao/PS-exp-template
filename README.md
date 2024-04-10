@@ -1,4 +1,5 @@
-# 2022-SWOT-Ocean-Cloud-Workshop
-2022 virtual workshop on accessing and analyzing synthetic SWOT L2 SSH datasets in preparation for SWOT launch, hosted by NASA PO.DAAC.
+# National Geographic Society's Pristine Seas Expedition: Palau - 2024
 
-![Image edited from https://swot.jpl.nasa.gov/resources/87/artists-impression-of-the-swot-satellite/](https://user-images.githubusercontent.com/51928352/153276603-03d101f6-9acc-4502-8d8b-05d2bb58e75e.png)
+This repository holds the data analyses related to this scientific expedition which took place on-board the RV ARGO between February and March, 2024. 
+
+![Expedition area](ps-exp-map.png)

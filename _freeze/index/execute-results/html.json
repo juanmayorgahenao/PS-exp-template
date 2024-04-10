@@ -1,0 +1,15 @@
+{
+  "hash": "2c1b8d022598dabac1c7687aadf9ac4a",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Overview\"\nauthor: \"Juan Mayorga\"\nnumber-sections: false\ndate: today\ntheme: cosmo\nformat: \n  html:\n    self-contained: true\n    code-fold: true\n    toc: true\n    toc-location: right\n---\n\n::: {.cell}\n\n:::\n\n\nthis is what the expedition is about\n\n![Expedition area](ps-exp-map.png)\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
