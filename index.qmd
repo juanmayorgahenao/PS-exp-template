@@ -1,6 +1,5 @@
 ---
-title: "Welcome"
-subtitle: "Data analyses"
+title: "Overview"
 author: "Juan Mayorga"
 number-sections: false
 date: today
@@ -35,5 +34,8 @@ bigrquery::bq_auth(email = "marine.data.science@ngs.org")
 bq_connection <- DBI::dbConnect(bigrquery::bigquery(), project = "pristine-seas")
 ```
 
-# About
+this is what the expedition is about
+
+![Expedition area](ps-exp-map.png)
+
 

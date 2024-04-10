@@ -33,9 +33,7 @@ bigrquery::bq_auth(email = "marine.data.science@ngs.org")
 bq_connection <- DBI::dbConnect(bigrquery::bigquery(), project = "pristine-seas")
 ```
 
-# Fish surveys
-
-## Metadata
+# Metadata
 
 ```{r uvs, eval = TRUE}
 uvs_meta <- readxl::read_xlsx(file.path(exp_path, 

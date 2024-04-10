@@ -33,8 +33,6 @@ bigrquery::bq_auth(email = "marine.data.science@ngs.org")
 bq_connection <- DBI::dbConnect(bigrquery::bigquery(), project = "pristine-seas")
 ```
 
-# Summary of work
-
 ```{r exp_meta, eval = F}
 shrd_cols <- c("expedition", "method", "ps_site_id", "station_id", "location", "date", "local_time", "lat", "lon", "depth_m", "team_lead")
 

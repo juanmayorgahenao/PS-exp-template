@@ -24,13 +24,24 @@ site:
       collapse-level: 1
       align: left
       contents:
-        - index.qmd
-        - processing_scripts/_Argo_track.qmd
+        - href: index.qmd
+          text: Overview
+        - processing_scripts/00_Argo_track.qmd
         - processing_scripts/13_consolidate_exp_meta.qmd
         - section: "Analyses"
           contents: 
             - processing_scripts/01_fish_surveys.qmd
             - processing_scripts/02_benthos_surveys.qmd
+            - processing_scripts/04_recruitment.qmd
+            - processing_scripts/03_inverts_surveys.qmd
+            - processing_scripts/05_clams.qmd
+            - processing_scripts/06_ysi.qmd
+            - processing_scripts/07_edna.qmd
+            - processing_scripts/10_bruvs.qmd
+            - processing_scripts/09_pelagics.qmd
+            - processing_scripts/08_birds.qmd
+            - processing_scripts/11_rov.qmd
+            - processing_scripts/12_dscm.qmd
 format:
   html:
     theme:

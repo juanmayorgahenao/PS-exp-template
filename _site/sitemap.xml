@@ -2,18 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://pristineseas.org/index.html</loc>
-    <lastmod>2024-04-10T18:48:50.388Z</lastmod>
+    <lastmod>2024-04-10T19:14:28.190Z</lastmod>
   </url>
   <url>
-    <loc>https://pristineseas.org/processing_scripts/01_fish_surveys.html</loc>
-    <lastmod>2024-04-10T18:27:49.120Z</lastmod>
+    <loc>https://pristineseas.org/processing_scripts/06_ysi.html</loc>
+    <lastmod>2024-04-10T19:19:52.651Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/10_bruvs.html</loc>
+    <lastmod>2024-04-10T19:20:44.416Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/11_rov.html</loc>
+    <lastmod>2024-04-10T19:21:00.545Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/03_inverts_surveys.html</loc>
+    <lastmod>2024-04-10T19:19:09.613Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/09_pelagics.html</loc>
+    <lastmod>2024-04-10T19:20:34.024Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/08_birds.html</loc>
+    <lastmod>2024-04-10T19:20:18.491Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/04_recruitment.html</loc>
+    <lastmod>2024-04-10T19:19:25.740Z</lastmod>
   </url>
   <url>
     <loc>https://pristineseas.org/processing_scripts/13_consolidate_exp_meta.html</loc>
-    <lastmod>2024-04-10T18:38:39.479Z</lastmod>
+    <lastmod>2024-04-10T18:58:14.294Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/07_edna.html</loc>
+    <lastmod>2024-04-10T19:20:07.041Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/01_fish_surveys.html</loc>
+    <lastmod>2024-04-10T18:56:58.076Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/12_dscm.html</loc>
+    <lastmod>2024-04-10T19:21:20.473Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/00_Argo_track.html</loc>
+    <lastmod>2024-04-10T18:57:16.305Z</lastmod>
   </url>
   <url>
     <loc>https://pristineseas.org/processing_scripts/02_benthos_surveys.html</loc>
-    <lastmod>2024-04-10T18:28:07.131Z</lastmod>
+    <lastmod>2024-04-10T18:57:06.106Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pristineseas.org/processing_scripts/05_clams.html</loc>
+    <lastmod>2024-04-10T19:19:37.418Z</lastmod>
   </url>
 </urlset>
