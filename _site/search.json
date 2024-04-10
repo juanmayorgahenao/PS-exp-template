@@ -2,130 +2,65 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "2022 SWOT Oceanography Cloud Workshop",
+    "title": "Welcome",
     "section": "",
-    "text": "Image edited from https://swot.jpl.nasa.gov/resources/87/artists-impression-of-the-swot-satellite/\n\n\nWelcome to the 2022 SWOT Oceanography Cloud Workshop hosted by the Physical Oceanography Distributed Active Archive Center (PO.DAAC), with support provided by the NASA Physical Oceanography Office and NASA Openscapes.\nThe workshop will take place virtually daily March 16 and 17, 2022 from 9am-1pm PST / 12pm-4pm EST (UTC-6). Invited participants will receive a signup link via email.",
+    "text": "About",
     "crumbs": [
-      "Welcome",
-      "2022 SWOT Oceanography Cloud Workshop"
+      "Welcome"
     ]
   },
   {
-    "objectID": "index.html#welcome",
-    "href": "index.html#welcome",
-    "title": "2022 SWOT Oceanography Cloud Workshop",
+    "objectID": "processing_scripts/01_fish_surveys.html",
+    "href": "processing_scripts/01_fish_surveys.html",
+    "title": "Fish Surveys",
     "section": "",
-    "text": "Image edited from https://swot.jpl.nasa.gov/resources/87/artists-impression-of-the-swot-satellite/\n\n\nWelcome to the 2022 SWOT Oceanography Cloud Workshop hosted by the Physical Oceanography Distributed Active Archive Center (PO.DAAC), with support provided by the NASA Physical Oceanography Office and NASA Openscapes.\nThe workshop will take place virtually daily March 16 and 17, 2022 from 9am-1pm PST / 12pm-4pm EST (UTC-6). Invited participants will receive a signup link via email.",
+    "text": "Number of fish surveys per location, habitat, and exposure\n\n\n\nExposure\nStrata\n# Sites\n# Transects\n# Reels\nSurveyed distance (m)\n\n\n\n\nFanna\n\n\nForereef\nLeeward\n2\n1\n2\n6\n150\n\n\nForereef\nWindward\n2\n5\n10\n30\n750\n\n\nTotal\n—\n—\n6\n12\n36\n900\n\n\nHelen\n\n\nBackreef\nLagoon\n1\n1\n2\n6\n150\n\n\nPatchreef\nLagoon\n2\n3\n6\n18\n450\n\n\nForereef\nLeeward\n2\n6\n12\n36\n900\n\n\nForereef\nWindward\n2\n5\n10\n30\n750\n\n\nTotal\n—\n—\n15\n30\n90\n2250\n\n\nMerir\n\n\nForereef\nLeeward\n2\n3\n6\n18\n450\n\n\nForereef\nWindward\n2\n4\n8\n24\n600\n\n\nTotal\n—\n—\n7\n14\n42\n1050\n\n\nPulo Anna\n\n\nForereef\nLeeward\n2\n2\n4\n12\n300\n\n\nForereef\nWindward\n2\n2\n4\n12\n300\n\n\nTotal\n—\n—\n4\n8\n24\n600\n\n\nSonsorol\n\n\nForereef\nLeeward\n2\n4\n8\n24\n600\n\n\nForereef\nWindward\n2\n3\n6\n18\n450\n\n\nTotal\n—\n—\n7\n14\n42\n1050\n\n\nTobi\n\n\nForereef\nLeeward\n2\n5\n10\n30\n750\n\n\nForereef\nWindward\n2\n1\n2\n6\n150\n\n\nTotal\n—\n—\n6\n12\n36\n900\n\n\nGrand total\n—\n—\n45\n90\n270\n6750",
     "crumbs": [
-      "Welcome",
-      "2022 SWOT Oceanography Cloud Workshop"
+      "Analyses",
+      "Fish Surveys"
     ]
   },
   {
-    "objectID": "index.html#about",
-    "href": "index.html#about",
-    "title": "2022 SWOT Oceanography Cloud Workshop",
-    "section": "About",
-    "text": "About\nWorkshop Goal The goal of the workshop is to get ready for Surface Water and Ocean Topography (SWOT) and enable the (oceanography) science team to be ready for processing and handling the large volumes of SWOT SSH data in the cloud. Learning objectives focus on how to access the simulated SWOT L2 SSH data from Earthdata Cloud either by downloading or accessing the data on the cloud. PO.DAAC is the NASA archive for the SWOT mission, and once launched will be making data available via the NASA Earthdata Cloud, hosted in AWS.\nWorkshop Description The workshop has two main components: (1) Pre-event materials will be shared ahead of the workshop and will cover how to access and download cloud-archived simulated SWOT L2 SSH data from the Earthdata Cloud. This material can be found under Logistics - Prerequisites & Homework section of this website. (2) At the workshop, the focus will be on in-could workflows, where no data download is required and data analysis can take place next to the data in the cloud. During the “hacking” time at the workshop participants can choose to employ the “download and analyze locally” or the “in-cloud analysis” paradigm for working with the simulated SWOT L2 SSH data. For the in-cloud workflows, cloud accounts will be provided for the workshop. PO.DAAC will provide necessary tech support during the hands-on “hacking” time.\nWorkshop Outcomes At the end of the two days, participants should be able to access the simulated SWOT L2 SSH data that is archived in the NASA EArthdata Cloud (hosted in AWS) and at minimum, subset and plot a time series of their favorite region, if not more. Participants are encouraged to coordinate amongst their respective SWOT ST project to figure out who will be attending. If the project would like more than one person to attend that is welcomed, just note that as a project you will need to agree on what use case you want to work on. Even if the team members amongst the project are cloud savvy, it is still strongly recommended that there is a representative attending, as this workshop will specifically be covering the SWOT simulated data.",
-    "crumbs": [
-      "Welcome",
-      "2022 SWOT Oceanography Cloud Workshop"
-    ]
-  },
-  {
-    "objectID": "index.html#acknowledgements",
-    "href": "index.html#acknowledgements",
-    "title": "2022 SWOT Oceanography Cloud Workshop",
-    "section": "Acknowledgements",
-    "text": "Acknowledgements\n2022 SWOT Oceanography Cloud Workshop is hosted by NASA’s PO.DAAC with support from NASA Physical Oceanography Office and the NASA Openscapes Project, with cloud computing infrastructure by 2i2c.",
-    "crumbs": [
-      "Welcome",
-      "2022 SWOT Oceanography Cloud Workshop"
-    ]
-  },
-  {
-    "objectID": "prerequisites/index.html",
-    "href": "prerequisites/index.html",
-    "title": "Prerequisites & Homework",
+    "objectID": "processing_scripts/01_fish_surveys.html#metadata",
+    "href": "processing_scripts/01_fish_surveys.html#metadata",
+    "title": "Fish Surveys",
     "section": "",
-    "text": "To follow along hands-on during the Workshop, please do the following (20 minutes). All software or accounts are free.\n\nGitHub username\n\nCreate a GitHub account (if you don’t already have one) at https://github.com. Follow optional advice on choosing your username\nThe workshop signup form asks for your GitHub username - this allows us to enable you access to a cloud environment during the workshop.\nRemember your username and password; you will need to be logged in during the workshop!\n\nEarthdata Login account\n\nCreate an Earthdata Login account (if you don’t already have one) at https://urs.earthdata.nasa.gov\nRemember your username and password; you will need to download or access cloud data during the workshop and beyond.\n\nGet comfortable\n\nConsider your computer set-up in advance, including an external monitor if possible. You can follow along in Jupyter Hub on your own computer while also watching an instructor demo over WebEx (or equivalent).",
+    "text": "Number of fish surveys per location, habitat, and exposure\n\n\n\nExposure\nStrata\n# Sites\n# Transects\n# Reels\nSurveyed distance (m)\n\n\n\n\nFanna\n\n\nForereef\nLeeward\n2\n1\n2\n6\n150\n\n\nForereef\nWindward\n2\n5\n10\n30\n750\n\n\nTotal\n—\n—\n6\n12\n36\n900\n\n\nHelen\n\n\nBackreef\nLagoon\n1\n1\n2\n6\n150\n\n\nPatchreef\nLagoon\n2\n3\n6\n18\n450\n\n\nForereef\nLeeward\n2\n6\n12\n36\n900\n\n\nForereef\nWindward\n2\n5\n10\n30\n750\n\n\nTotal\n—\n—\n15\n30\n90\n2250\n\n\nMerir\n\n\nForereef\nLeeward\n2\n3\n6\n18\n450\n\n\nForereef\nWindward\n2\n4\n8\n24\n600\n\n\nTotal\n—\n—\n7\n14\n42\n1050\n\n\nPulo Anna\n\n\nForereef\nLeeward\n2\n2\n4\n12\n300\n\n\nForereef\nWindward\n2\n2\n4\n12\n300\n\n\nTotal\n—\n—\n4\n8\n24\n600\n\n\nSonsorol\n\n\nForereef\nLeeward\n2\n4\n8\n24\n600\n\n\nForereef\nWindward\n2\n3\n6\n18\n450\n\n\nTotal\n—\n—\n7\n14\n42\n1050\n\n\nTobi\n\n\nForereef\nLeeward\n2\n5\n10\n30\n750\n\n\nForereef\nWindward\n2\n1\n2\n6\n150\n\n\nTotal\n—\n—\n6\n12\n36\n900\n\n\nGrand total\n—\n—\n45\n90\n270\n6750",
     "crumbs": [
-      "Prerequisites & Homework"
+      "Analyses",
+      "Fish Surveys"
     ]
   },
   {
-    "objectID": "prerequisites/index.html#prerequisites",
-    "href": "prerequisites/index.html#prerequisites",
-    "title": "Prerequisites & Homework",
+    "objectID": "processing_scripts/13_consolidate_exp_meta.html",
+    "href": "processing_scripts/13_consolidate_exp_meta.html",
+    "title": "Summary of work",
     "section": "",
-    "text": "To follow along hands-on during the Workshop, please do the following (20 minutes). All software or accounts are free.\n\nGitHub username\n\nCreate a GitHub account (if you don’t already have one) at https://github.com. Follow optional advice on choosing your username\nThe workshop signup form asks for your GitHub username - this allows us to enable you access to a cloud environment during the workshop.\nRemember your username and password; you will need to be logged in during the workshop!\n\nEarthdata Login account\n\nCreate an Earthdata Login account (if you don’t already have one) at https://urs.earthdata.nasa.gov\nRemember your username and password; you will need to download or access cloud data during the workshop and beyond.\n\nGet comfortable\n\nConsider your computer set-up in advance, including an external monitor if possible. You can follow along in Jupyter Hub on your own computer while also watching an instructor demo over WebEx (or equivalent).",
+    "text": "Summary of work\n\n\n\n\n\n\n\n\nNumber of workstations per method and location\n\n\n\nOffshore\nSW Islands\n\n\nBabeldaob\nSW Slope\nNW Slope\nSeamount A\nSeamount B-N\nSeamount B-C\nSeamount B-S\nSonsorol\nFanna\nPulo Anna\nMerir\nTobi\nHelen\n\n\n\n\nBirds survey\n18\n0\n0\n5\n1\n2\n6\n19\n15\n14\n19\n20\n25\n\n\nBenthic BRUVS\n0\n0\n0\n0\n0\n0\n0\n13\n6\n4\n8\n7\n24\n\n\nBenthic survey\n0\n0\n0\n0\n0\n0\n0\n14\n10\n7\n14\n12\n30\n\n\nCoral recruitment\n0\n0\n0\n0\n0\n0\n0\n14\n10\n6\n8\n12\n28\n\n\nEnvironmental DNA\n0\n0\n0\n0\n0\n0\n0\n4\n6\n4\n4\n4\n10\n\n\nFish survey\n0\n0\n0\n0\n0\n0\n0\n14\n12\n8\n14\n12\n30\n\n\nInvertebrate survey\n0\n0\n0\n0\n0\n0\n0\n6\n8\n6\n14\n12\n30\n\n\nPelagic BRUVS\n0\n9\n6\n4\n1\n2\n4\n3\n2\n2\n3\n4\n9\n\n\nDeep sea camera\n0\n5\n8\n6\n2\n3\n3\n11\n0\n0\n6\n6\n8\n\n\nGiant clam demographics\n0\n0\n0\n0\n0\n0\n0\n2\n0\n0\n1\n1\n13\n\n\nROV\n0\n7\n9\n1\n0\n0\n0\n4\n0\n0\n3\n2\n1\n\n\nGrand total\n18\n21\n23\n16\n4\n7\n13\n104\n69\n51\n94\n92\n208\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: Work sites",
     "crumbs": [
-      "Prerequisites & Homework"
+      "Summary of work"
     ]
   },
   {
-    "objectID": "prerequisites/index.html#pre-workshop-homework",
-    "href": "prerequisites/index.html#pre-workshop-homework",
-    "title": "Prerequisites & Homework",
-    "section": "Pre-Workshop Homework",
-    "text": "Pre-Workshop Homework\nWe recommmend watching or walking through the following tutorials ahead of the workshop, to become familiar with topics that we won’t have time to take a deep dive into during the workshop, but which are important pieces in accessing (simulated) SWOT data hosted in the NASA Earthdata Cloud. You will get the chance to ask any questions regarding the material covered in these pre-workshop tutorials during the workshop.\n\nTutorial: Search for PO.DAAC data using the Earthdata Search GUI (15 min)\n\nGeneric tutorial on how to search and retrieve download or access links for PO.DAAC data using the Earthdata Search GUI.\n\nTutorial: NASA Earthdata Authentication (5 minutes)\n\nTutorial for generating a netrc file, which enables programmatic (command line) NASA Earthdata Authentication. If you don’t have a NASA Earthdata user login account, you can set up a free one quickly. See the Prerequisites section above.\n\nTutorial: Download data from the NASA Earthdata Cloud using the PO.DAAC data-subscriber (12 minutes)\n\nWhile the workshop will focus on data access within the cloud, data download from the NASA Earthdata Cloud is still possbile. This tutorial will walk you through how to download simulated SWOT L2 data from the PO.DAAC archive in Earthdata Cloud (hosted in AWS), using the PO.DAAC data-subscriber tool.",
-    "crumbs": [
-      "Prerequisites & Homework"
-    ]
-  },
-  {
-    "objectID": "prerequisites/03_download.html",
-    "href": "prerequisites/03_download.html",
-    "title": "03. Download with PO.DAAC data-subscriber",
+    "objectID": "processing_scripts/02_benthos_surveys.html",
+    "href": "processing_scripts/02_benthos_surveys.html",
+    "title": "Benthic surveys",
     "section": "",
-    "text": "Tutorial: Download data from the NASA Earthdata Cloud using the PO.DAAC data-subscriber (12 minutes)\nWhile the workshop will focus on data access within the cloud, data download from the NASA Earthdata Cloud is still possbile. This tutorial will walk you through how to download simulated SWOT L2 data from the PO.DAAC archive in Earthdata Cloud (hosted in AWS), using the PO.DAAC data-subscriber tool.",
+    "text": "Number of benthic surveys per location, habitat, and exposure\n\n\n\nExposure\nStrata\n# Sites\n# Transects\n# Sections\nSurveyed distance (m)\n\n\n\n\nFanna\n\n\nForereef\nLeeward\n2\n1\n2\n10\n100\n\n\nForereef\nWindward\n2\n4\n8\n40\n400\n\n\nTotal\n—\n—\n5\n10\n50\n500\n\n\nHelen\n\n\nBackreef\nLagoon\n1\n1\n2\n10\n100\n\n\nPatchreef\nLagoon\n3\n3\n6\n30\n300\n\n\nForereef\nLeeward\n2\n6\n12\n60\n600\n\n\nForereef\nWindward\n2\n5\n10\n50\n500\n\n\nTotal\n—\n—\n15\n30\n150\n1500\n\n\nMerir\n\n\nForereef\nLeeward\n2\n3\n6\n26\n275\n\n\nForereef\nWindward\n2\n4\n8\n37\n400\n\n\nTotal\n—\n—\n7\n14\n63\n675\n\n\nPulo Anna\n\n\nForereef\nLeeward\n2\n2\n4\n20\n200\n\n\nForereef\nWindward\n2\n2\n3\n15\n150\n\n\nTotal\n—\n—\n4\n7\n35\n350\n\n\nSonsorol\n\n\nForereef\nLeeward\n2\n4\n8\n30\n300\n\n\nForereef\nWindward\n2\n3\n6\n28\n280\n\n\nTotal\n—\n—\n7\n14\n58\n580\n\n\nTobi\n\n\nForereef\nLeeward\n2\n5\n10\n50\n500\n\n\nForereef\nWindward\n2\n1\n2\n10\n100\n\n\nTotal\n—\n—\n6\n12\n60\n600\n\n\nGrand total\n—\n—\n44\n87\n416\n4205",
     "crumbs": [
-      "Prerequisites & Homework",
-      "03. Download with PO.DAAC data-subscriber"
+      "Analyses",
+      "Benthic surveys"
     ]
   },
   {
-    "objectID": "prerequisites/01_Earthdata_Search.html",
-    "href": "prerequisites/01_Earthdata_Search.html",
-    "title": "01. Earthdata Search",
+    "objectID": "processing_scripts/02_benthos_surveys.html#metadata",
+    "href": "processing_scripts/02_benthos_surveys.html#metadata",
+    "title": "Benthic surveys",
     "section": "",
-    "text": "This tutorial guides you through how to use Earthdata Search for NASA Earth observations search and discovery, and how to connect the search output (e.g. download or access links) to a programmatic workflow (locally or from within the cloud).\n\nStep 1. Go to Earthdata Search and Login\nGo to Earthdata Search https://search.earthdata.nasa.gov and use your Earthdata login credentials to log in. If you do not have an Earthdata account, please see the Workshop Prerequisites for guidance.\n\n\nStep 2. Search for dataset of interest\nUse the search box in the upper left to type key words. In this example we are interested in the ECCO dataset, hosted by the PO.DAAC. This dataset is available from the NASA Earthdata Cloud archive hosted in AWS cloud.\nClick on the “Available from AWS Cloud” filter option on the left. Here, 104 matching collections were found with the basic ECCO search.\n\n\n\nFigure caption: Search for ECCO data available in AWS cloud in Earthdata Search portal\n\n\nLet’s refine our search further. Let’s search for ECCO monthly SSH in the search box (which will produce 39 matching collections), and for the time period for year 2015. The latter can be done using the calendar icon on the left under the search box.\nScroll down the list of returned matches until we see the dataset of interest, in this case ECCO Sea Surface Height - Monthly Mean 0.5 Degree (Version 4 Release 4).\nWe can click on the (i) icon for the dataset to read more details, including the dataset shortname (helpful for programmatic workflows) just below the dataset name; here ECCO_L4_SSH_05DEG_MONTHLY_V4R4.\n\n\n\nFigure caption: Refine search, set temporal bounds, get more information\n\n\n\n\nStep 3. Explore the dataset details, including Cloud Access information\nOnce we clicked the (i), scrolling down the info page for the dataset we will see Cloud Access information, such as:\n\nwhether the dataset is available in the cloud\nthe cloud Region (all NASA Earthdata Cloud data is/will be in us-west-2 region)\nthe S3 storage bucket and object prefix where this data is located\nlink that generates AWS S3 Credentials for in-cloud data access (we will cover this in the Direct Data Access Tutorials)\nlink to documentation describing the In-region Direct S3 Access to Buckets. Note: these will be unique depending on the DAAC where the data is archived. (We will show examples of direct in-region access in Tutorial 3.)\n\n\n\n\nFigure caption: Cloud access info in EDS\n\n\n\n\n\nFigure caption: Documentation describing the In-region Direct S3 Access to Buckets\n\n\nPro Tip: Clicking on “For Developers” to exapnd will provide programmatic endpoints such as those for the CMR API, and more. CMR API and CMR STAC API tutorials can be found on the 2021 Cloud Hackathon website.\nFor now, let’s say we are intersted in getting download link(s) or access link(s) for specific data files (granules) within this collection.\nAt the top of the dataset info section, click on Search Results, which will take us back to the list of datasets matching our search parameters. Clicking on the dataset (here again it’s the same ECCO Sea Surface Height - Monthly Mean 0.5 Degree (Version 4 Release 4)) we now see a list of files (granules) that are part of the dataset (collection).\n\n\nStep 4. Customize the download or data access\nClick on the green + symbol to add a few files to our project. Here we added the first 3 listed for 2015. Then click on the green button towards the bottom that says “Download”. This will take us to another page with options to customize our download or access link(s).\n\n\n\nFigure caption: Select granules and click download\n\n\n\n4.a. Entire file content\nLet’s stay we are interested in the entire file content, so we select the “Direct Download” option (as opposed to other options to subset or transform the data):\n\n\n\nFigure caption: Customize your download or access\n\n\nClicking the green Download Data button again, will take us to the final page for instructions to download and links for data access in the cloud. You should see three tabs: Download Files, AWS S3 Access, Download Script:\n  \nThe Download Files tab provides the https:// links for downloading the files locally. E.g.: https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/ECCO_L4_SSH_05DEG_MONTHLY_V4R4/SEA_SURFACE_HEIGHT_mon_mean_2015-09_ECCO_V4r4_latlon_0p50deg.nc\nThe AWS S3 Access tab provides the S3:// links, which is what we would use to access the data directly in-region (us-west-2) within the AWS cloud (an example will be shown in Tutorial 3). E.g.: s3://podaac-ops-cumulus-protected/ECCO_L4_SSH_05DEG_MONTHLY_V4R4/SEA_SURFACE_HEIGHT_mon_mean_2015-09_ECCO_V4r4_latlon_0p50deg.nc where s3 indicates data is stored in AWS S3 storage, podaac-ops-cumulus-protected is the bucket, and ECCO_L4_SSH_05DEG_MONTHLY_V4R4 is the object prefix (the latter two are also listed in the dataset collection information under Cloud Access (step 3 above)).\nTip: Another quicker way to find the bucket and object prefix is from the list of data files the search returns. Next to the + green button is a grey donwload symbol. Click on that to see the Download Files https:// links or on the AWS S3 Access to get the direct S3:// access links, which contain the bucket and object prefix where data is stored.\n\n\n4.b. Subset or transform before download or access\nDAAC tools and services are also being migrated or developed in the cloud, next to that data. These include the Harmony API and OPeNDAP in the cloud, as a few examples.\nWe can leverage these cloud-based services on cloud-archived data to reduce or transform the data (depending on need) before getting the access links regardless of whether we prefer to download the data and work on a local machine or whether we want to access the data in the cloud (from a cloud workspace). These can be useful data reduction services that support a faster time to science.\nHarmony\nHarmony allows you to seamlessly analyze Earth observation data from different NASA data centers. These services (API endpoints) provide data reduction (e.g. subsetting) and transfromation services (e.g. convert netCDF data to Zarr cloud optimized format).\n\n\n\nFigure caption: Leverage Harmony cloud-based data transformation services\n\n\nWhen you click the final green Download button, the links provided are to data that had been transformed based on our selections on the previous screen (here chosing to use the Harmony service to reformat the data to Zarr). These data are staged for us in an S3 bucket in AWS, and we can use the s3:// links to access those specific data. This service also provides STAC access links. This particular example is applicable if your workflow is in the AWS us-west-2 region.\n\n\n\nFigure caption: Harmony-staged data in S3\n\n\n\n\n\nStep 5. Integrate file links into programmatic workflow, locally or in the AWS cloud.\nIn tutorial 3 Direct Data Access, we will work programmatically in the cloud to access datasets of interest, to get us set up for further scientific analysis of choice. There are several ways to do this. One way to connect the search part of the workflow we just did in Earthdata Search to our next steps working in the cloud is to simply copy/paste the s3:// links provides in Step 4 above into a JupyterHub notebook or script in our cloud workspace, and continue the data analysis from there.\nOne could also copy/paste the s3:// links and save them in a text file, then open and read the text file in the notebook or script in the JupyterHub in the cloud.\nTutorial 3 will pick up from here and cover these next steps in more detail.",
+    "text": "Number of benthic surveys per location, habitat, and exposure\n\n\n\nExposure\nStrata\n# Sites\n# Transects\n# Sections\nSurveyed distance (m)\n\n\n\n\nFanna\n\n\nForereef\nLeeward\n2\n1\n2\n10\n100\n\n\nForereef\nWindward\n2\n4\n8\n40\n400\n\n\nTotal\n—\n—\n5\n10\n50\n500\n\n\nHelen\n\n\nBackreef\nLagoon\n1\n1\n2\n10\n100\n\n\nPatchreef\nLagoon\n3\n3\n6\n30\n300\n\n\nForereef\nLeeward\n2\n6\n12\n60\n600\n\n\nForereef\nWindward\n2\n5\n10\n50\n500\n\n\nTotal\n—\n—\n15\n30\n150\n1500\n\n\nMerir\n\n\nForereef\nLeeward\n2\n3\n6\n26\n275\n\n\nForereef\nWindward\n2\n4\n8\n37\n400\n\n\nTotal\n—\n—\n7\n14\n63\n675\n\n\nPulo Anna\n\n\nForereef\nLeeward\n2\n2\n4\n20\n200\n\n\nForereef\nWindward\n2\n2\n3\n15\n150\n\n\nTotal\n—\n—\n4\n7\n35\n350\n\n\nSonsorol\n\n\nForereef\nLeeward\n2\n4\n8\n30\n300\n\n\nForereef\nWindward\n2\n3\n6\n28\n280\n\n\nTotal\n—\n—\n7\n14\n58\n580\n\n\nTobi\n\n\nForereef\nLeeward\n2\n5\n10\n50\n500\n\n\nForereef\nWindward\n2\n1\n2\n10\n100\n\n\nTotal\n—\n—\n6\n12\n60\n600\n\n\nGrand total\n—\n—\n44\n87\n416\n4205",
     "crumbs": [
-      "Prerequisites & Homework",
-      "01. Earthdata Search"
-    ]
-  },
-  {
-    "objectID": "prerequisites/02_NASA_Earthdata_Authentication.html",
-    "href": "prerequisites/02_NASA_Earthdata_Authentication.html",
-    "title": "02. Authentication for NASA Earthdata",
-    "section": "",
-    "text": "This notebook creates a hidden .netrc file (_netrc for Window OS) with Earthdata login credentials in your home directory. This file is needed to access NASA Earthdata assets from a scripting environment like Python.\n\n\nAn Earthdata Login account is required to access data, as well as discover restricted data, from the NASA Earthdata system. Thus, to access NASA data, you need Earthdata Login. Please visit https://urs.earthdata.nasa.gov to register and manage your Earthdata Login account. This account is free to create and only takes a moment to set up.\n\n\n\nYou will need a netrc file containing your NASA Earthdata Login credentials in order to execute the notebooks. A netrc file can be created manually within text editor and saved to your home directory. An example of the required content is below.\nmachine urs.earthdata.nasa.gov\nlogin &lt;USERNAME&gt;\npassword &lt;PASSWORD&gt;\n&lt;USERNAME&gt; and &lt;PASSWORD&gt; would be replaced by your actual Earthdata Login username and password respectively.\n\n\n\n\n\nfrom netrc import netrc\nfrom subprocess import Popen\nfrom platform import system\nfrom getpass import getpass\nimport os\n\nThe code below will:\n\ncheck what operating system (OS) is being used to determine which netrc file to check for/create (.netrc or _netrc)\ncheck if you have an netrc file, and if so, varify if those credentials are for the Earthdata endpoint\ncreate a netrc file if a netrc file is not present.\n\n\nurs = 'urs.earthdata.nasa.gov'    # Earthdata URL endpoint for authentication\nprompts = ['Enter NASA Earthdata Login Username: ',\n           'Enter NASA Earthdata Login Password: ']\n\n# Determine the OS (Windows machines usually use an '_netrc' file)\nnetrc_name = \"_netrc\" if system()==\"Windows\" else \".netrc\"\n\n# Determine if netrc file exists, and if so, if it includes NASA Earthdata Login Credentials\ntry:\n    netrcDir = os.path.expanduser(f\"~/{netrc_name}\")\n    netrc(netrcDir).authenticators(urs)[0]\n\n# Below, create a netrc file and prompt user for NASA Earthdata Login Username and Password\nexcept FileNotFoundError:\n    homeDir = os.path.expanduser(\"~\")\n    Popen('touch {0}{2} | echo machine {1} &gt;&gt; {0}{2}'.format(homeDir + os.sep, urs, netrc_name), shell=True)\n    Popen('echo login {} &gt;&gt; {}{}'.format(getpass(prompt=prompts[0]), homeDir + os.sep, netrc_name), shell=True)\n    Popen('echo \\'password {} \\'&gt;&gt; {}{}'.format(getpass(prompt=prompts[1]), homeDir + os.sep, netrc_name), shell=True)\n    # Set restrictive permissions\n    Popen('chmod 0600 {0}{1}'.format(homeDir + os.sep, netrc_name), shell=True)\n\n    # Determine OS and edit netrc file if it exists but is not set up for NASA Earthdata Login\nexcept TypeError:\n    homeDir = os.path.expanduser(\"~\")\n    Popen('echo machine {1} &gt;&gt; {0}{2}'.format(homeDir + os.sep, urs, netrc_name), shell=True)\n    Popen('echo login {} &gt;&gt; {}{}'.format(getpass(prompt=prompts[0]), homeDir + os.sep, netrc_name), shell=True)\n    Popen('echo \\'password {} \\'&gt;&gt; {}{}'.format(getpass(prompt=prompts[1]), homeDir + os.sep, netrc_name), shell=True)\n\n\n\nIf the file was created, we’ll see a .netrc file (_netrc for Window OS) in the list printed below. To view the contents from a Jupyter environment, click File on the top toolbar, select Open from Path…, type .netrc, and click Open. The .netrc file will open within the text editor.\n\n!!! Beware, your password will be visible if the .netrc file is opened in the text editor.\n\n\n!ls -al ~/",
-    "crumbs": [
-      "Prerequisites & Homework",
-      "02. Authentication for NASA Earthdata"
-    ]
-  },
-  {
-    "objectID": "prerequisites/02_NASA_Earthdata_Authentication.html#summary",
-    "href": "prerequisites/02_NASA_Earthdata_Authentication.html#summary",
-    "title": "02. Authentication for NASA Earthdata",
-    "section": "",
-    "text": "This notebook creates a hidden .netrc file (_netrc for Window OS) with Earthdata login credentials in your home directory. This file is needed to access NASA Earthdata assets from a scripting environment like Python.\n\n\nAn Earthdata Login account is required to access data, as well as discover restricted data, from the NASA Earthdata system. Thus, to access NASA data, you need Earthdata Login. Please visit https://urs.earthdata.nasa.gov to register and manage your Earthdata Login account. This account is free to create and only takes a moment to set up.\n\n\n\nYou will need a netrc file containing your NASA Earthdata Login credentials in order to execute the notebooks. A netrc file can be created manually within text editor and saved to your home directory. An example of the required content is below.\nmachine urs.earthdata.nasa.gov\nlogin &lt;USERNAME&gt;\npassword &lt;PASSWORD&gt;\n&lt;USERNAME&gt; and &lt;PASSWORD&gt; would be replaced by your actual Earthdata Login username and password respectively.",
-    "crumbs": [
-      "Prerequisites & Homework",
-      "02. Authentication for NASA Earthdata"
-    ]
-  },
-  {
-    "objectID": "prerequisites/02_NASA_Earthdata_Authentication.html#import-required-packages",
-    "href": "prerequisites/02_NASA_Earthdata_Authentication.html#import-required-packages",
-    "title": "02. Authentication for NASA Earthdata",
-    "section": "",
-    "text": "from netrc import netrc\nfrom subprocess import Popen\nfrom platform import system\nfrom getpass import getpass\nimport os\n\nThe code below will:\n\ncheck what operating system (OS) is being used to determine which netrc file to check for/create (.netrc or _netrc)\ncheck if you have an netrc file, and if so, varify if those credentials are for the Earthdata endpoint\ncreate a netrc file if a netrc file is not present.\n\n\nurs = 'urs.earthdata.nasa.gov'    # Earthdata URL endpoint for authentication\nprompts = ['Enter NASA Earthdata Login Username: ',\n           'Enter NASA Earthdata Login Password: ']\n\n# Determine the OS (Windows machines usually use an '_netrc' file)\nnetrc_name = \"_netrc\" if system()==\"Windows\" else \".netrc\"\n\n# Determine if netrc file exists, and if so, if it includes NASA Earthdata Login Credentials\ntry:\n    netrcDir = os.path.expanduser(f\"~/{netrc_name}\")\n    netrc(netrcDir).authenticators(urs)[0]\n\n# Below, create a netrc file and prompt user for NASA Earthdata Login Username and Password\nexcept FileNotFoundError:\n    homeDir = os.path.expanduser(\"~\")\n    Popen('touch {0}{2} | echo machine {1} &gt;&gt; {0}{2}'.format(homeDir + os.sep, urs, netrc_name), shell=True)\n    Popen('echo login {} &gt;&gt; {}{}'.format(getpass(prompt=prompts[0]), homeDir + os.sep, netrc_name), shell=True)\n    Popen('echo \\'password {} \\'&gt;&gt; {}{}'.format(getpass(prompt=prompts[1]), homeDir + os.sep, netrc_name), shell=True)\n    # Set restrictive permissions\n    Popen('chmod 0600 {0}{1}'.format(homeDir + os.sep, netrc_name), shell=True)\n\n    # Determine OS and edit netrc file if it exists but is not set up for NASA Earthdata Login\nexcept TypeError:\n    homeDir = os.path.expanduser(\"~\")\n    Popen('echo machine {1} &gt;&gt; {0}{2}'.format(homeDir + os.sep, urs, netrc_name), shell=True)\n    Popen('echo login {} &gt;&gt; {}{}'.format(getpass(prompt=prompts[0]), homeDir + os.sep, netrc_name), shell=True)\n    Popen('echo \\'password {} \\'&gt;&gt; {}{}'.format(getpass(prompt=prompts[1]), homeDir + os.sep, netrc_name), shell=True)\n\n\n\nIf the file was created, we’ll see a .netrc file (_netrc for Window OS) in the list printed below. To view the contents from a Jupyter environment, click File on the top toolbar, select Open from Path…, type .netrc, and click Open. The .netrc file will open within the text editor.\n\n!!! Beware, your password will be visible if the .netrc file is opened in the text editor.\n\n\n!ls -al ~/",
-    "crumbs": [
-      "Prerequisites & Homework",
-      "02. Authentication for NASA Earthdata"
+      "Analyses",
+      "Benthic surveys"
     ]
   }
 ]

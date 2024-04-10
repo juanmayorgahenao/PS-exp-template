@@ -24,15 +24,13 @@ site:
       collapse-level: 1
       align: left
       contents:
-        - section: "Welcome"
-          contents:
-            - index.md
-        - section: prerequisites/index.md 
-          contents:
-            - prerequisites/01_Earthdata_Search.md ## tutorial 1
-            - prerequisites/02_NASA_Earthdata_Authentication.ipynb ## tutorial 2
-            - prerequisites/03_download.md
-            
+        - index.qmd
+        - processing_scripts/_Argo_track.qmd
+        - processing_scripts/13_consolidate_exp_meta.qmd
+        - section: "Analyses"
+          contents: 
+            - processing_scripts/01_fish_surveys.qmd
+            - processing_scripts/02_benthos_surveys.qmd
 format:
   html:
     theme:

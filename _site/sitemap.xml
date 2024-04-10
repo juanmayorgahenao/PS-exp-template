@@ -2,22 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://pristineseas.org/index.html</loc>
-    <lastmod>2024-04-10T17:55:58.604Z</lastmod>
+    <lastmod>2024-04-10T18:48:50.388Z</lastmod>
   </url>
   <url>
-    <loc>https://pristineseas.org/prerequisites/index.html</loc>
-    <lastmod>2024-04-10T17:55:58.654Z</lastmod>
+    <loc>https://pristineseas.org/processing_scripts/01_fish_surveys.html</loc>
+    <lastmod>2024-04-10T18:27:49.120Z</lastmod>
   </url>
   <url>
-    <loc>https://pristineseas.org/prerequisites/03_download.html</loc>
-    <lastmod>2024-04-10T17:55:58.605Z</lastmod>
+    <loc>https://pristineseas.org/processing_scripts/13_consolidate_exp_meta.html</loc>
+    <lastmod>2024-04-10T18:38:39.479Z</lastmod>
   </url>
   <url>
-    <loc>https://pristineseas.org/prerequisites/01_Earthdata_Search.html</loc>
-    <lastmod>2024-04-10T17:55:58.605Z</lastmod>
-  </url>
-  <url>
-    <loc>https://pristineseas.org/prerequisites/02_NASA_Earthdata_Authentication.html</loc>
-    <lastmod>2024-04-10T17:55:58.605Z</lastmod>
+    <loc>https://pristineseas.org/processing_scripts/02_benthos_surveys.html</loc>
+    <lastmod>2024-04-10T18:28:07.131Z</lastmod>
   </url>
 </urlset>

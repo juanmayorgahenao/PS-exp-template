@@ -1,0 +1,61 @@
+---
+title: "Vessel track"
+subtitle: "Data analyses"
+author: "Juan Mayorga"
+number-sections: false
+date: today
+theme: cosmo
+format: 
+  html:
+    self-contained: true
+    code-fold: true
+    toc: true
+    toc-location: right
+---
+
+```{r, message = F, warning = F, fig.width = 10, fig.height = 10, echo = F}
+library(paletteer)
+library(sf)
+library(bigrquery)
+library(gt)
+library(tidyverse)
+
+knitr::opts_chunk$set(eval = F, warning = F, message = F, include = F, echo = F)
+
+PristineSeasR::set_ps_paths(email = "marine.data.science@ngs.org")
+
+exp_id <- "PLW_2024"
+
+exp_path <- file.path(ps_science_path, "expeditions", "PLW-2024")
+
+ps_data_path <- file.path(ps_science_path, "datasets/")
+
+bigrquery::bq_auth(email = "marine.data.science@ngs.org")
+
+bq_connection <- DBI::dbConnect(bigrquery::bigquery(), project = "pristine-seas")
+```
+
+# Vessel track
+
+```{r track, eval = TRUE}
+#Argo mmsi: 312208000
+#Argo callsign: V3OW5
+
+argo_track <- sf::st_read(file.path(exp_path,
+                                    "data/primary/raw/argo-route/data.geojson")) 
+
+argo_nm <- round((st_length(argo_track)/10^3)*0.539957) # NM
+```
+
+The Argo traveled a total of `r round(as.numeric(sum(argo_nm)*1.852))` km during this expedition. 
+
+```{r track_map, eval = TRUE, include = T}
+#| label: fig-track
+#| fig-cap: "RV Argo track. Based on the ship's AIS."
+#| cap-location: margin
+mapview::mapview(argo_track, 
+                 map.types = c("Esri.WorldImagery"), 
+                 layer.name = c("RV ARGO"), 
+                 color = c("gold"))
+```
+
