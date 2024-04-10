@@ -2,24 +2,24 @@ project:
   type: website
 
 site:
-  title: "2022 SWOT Oceanography Cloud Workshop"
-  site-url: https://nasa-openscapes.github.io/2022-SWOT-Ocean-Cloud-Workshop
-  repo-url: https://github.com/podaac/2022-SWOT-Ocean-Cloud-Workshop
+  title: "National Geographic Pristine Seas Expedition - Palau (2024)"
+  site-url: https://pristineseas.org
+  repo-url: https://github.com/pristine-seas/exp-PLW-2024
   repo-actions: [edit, issue]
   page-navigation: true
-  page-footer: "PODAAC (2022). 2022 SWOT Oceanography Cloud Workshop"
+  page-footer: "National Geographic Society (2022)"
  
   navbar: 
     #background: light
     right: 
       - sidebar:welcome
       - icon: github
-        href: https://github.com/podaac/2022-SWOT-Ocean-Cloud-Workshop
+        href: https://github.com/pristine-seas/exp-PLW-2024
  
   sidebar:
     - id: welcome
       title: "Menu"
-      logo: podaac-logo.png
+      logo: ps-logo.png
       style: "docked"
       collapse-level: 1
       align: left
@@ -27,30 +27,12 @@ site:
         - section: "Welcome"
           contents:
             - index.md
-            - cloud-paradigm.md
-        - schedule.md
         - section: prerequisites/index.md 
           contents:
-            - logistics/github-workflows.md
             - prerequisites/01_Earthdata_Search.md ## tutorial 1
             - prerequisites/02_NASA_Earthdata_Authentication.ipynb ## tutorial 2
             - prerequisites/03_download.md
-        - section: "Tutorials"
-          contents: 
-            - tutorials/index.md
-            - tutorials/00_Setup.md  ## tutorial 0
-            - tutorials/01_Direct_Access_SWOT_sim.ipynb  ## tutorial 1
-            - tutorials/02_Subset_SWOT_sim.ipynb ## tutorial 2
-            - tutorials/03_Timeseries_SWOT_sim.ipynb
-        - section: "Further Resources"
-          contents:
-            - further-resources.md
-            - section: "Workshop Additional Tutorials"
-              contents:
-                - tutorials/SWOT_sim_data_intro.ipynb   ## Jinbo's SWOT simulated data intro
-                - tutorials/Finding_collection_s3_location.ipynb  ## Mike's complementary notebook to direct access
             
-
 format:
   html:
     theme:
