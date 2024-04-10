@@ -1,1 +1,1 @@
-Sitemap: https://nasa-openscapes.github.io/2022-SWOT-Ocean-Cloud-Workshop/sitemap.xml
+Sitemap: https://pristineseas.org/sitemap.xml
