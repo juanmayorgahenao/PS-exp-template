@@ -17,6 +17,7 @@ library(bigrquery)
 library(gt)
 library(pointblank)
 library(tidyverse)
+library(PristineSeasR)
 library(mapview)
 
 knitr::opts_chunk$set(eval = F, warning = F, message = F, include = F, echo = F)
@@ -61,14 +62,14 @@ amf_fish_obs <- readxl::read_xlsx(file.path(exp_path,
                                                    "_fish_fieldbook_AMF.xlsx")),
                                   sheet = "obs") |> 
   as_tibble()
-  
+
 aaf_fish_obs <- readxl::read_xlsx(file.path(exp_path, 
-                                        paste0("data/primary/raw/fish/",
-                                               exp_id,
-                                               "_fish_fieldbook_AAF.xlsx")),
+                                            paste0("data/primary/raw/fish/",
+                                                   exp_id,
+                                                   "_fish_fieldbook_AAF.xlsx")),
                                   sheet = "obs") |> 
   as_tibble()
-  
+
 fish_obs <- bind_rows(amf_fish_obs, aaf_fish_obs) |> 
   rename(uvs_id = ps_station_id,
          reel = transect) 
@@ -126,12 +127,12 @@ mapview::mapview(tmp,
                  map.types = c("Esri.WorldImagery"),
                  layer.name = "Habitat",
                  popup = leafpop::popupTable(tmp,
-                                      zcol = c("method",
-                                               "ps_site_id",
-                                               "location",
-                                               "habitat",
-                                               "exposure", 
-                                               "strata")))
+                                             zcol = c("method",
+                                                      "ps_site_id",
+                                                      "location",
+                                                      "habitat",
+                                                      "exposure", 
+                                                      "strata")))
 ```
 
 ```{r fish_table, eval = TRUE, include = TRUE}
@@ -175,18 +176,18 @@ fish_meta |>
 
 ```{r taxa_codes}
 taxa_codes_amf <- readxl::read_xlsx(file.path(exp_path, 
-                                            paste0("data/primary/raw/fish/",
-                                                   exp_id,
-                                                   "_fish_fieldbook_AMF.xlsx")),
-                                  sheet = "codes") |> 
+                                              paste0("data/primary/raw/fish/",
+                                                     exp_id,
+                                                     "_fish_fieldbook_AMF.xlsx")),
+                                    sheet = "codes") |> 
   as_tibble() |> 
   filter(!is.na(ps_taxon_code))
 
 taxa_codes_aaf <- readxl::read_xlsx(file.path(exp_path, 
-                                            paste0("data/primary/raw/fish/",
-                                                   exp_id,
-                                                   "_fish_fieldbook_AAF.xlsx")),
-                                  sheet = "codes") |> 
+                                              paste0("data/primary/raw/fish/",
+                                                     exp_id,
+                                                     "_fish_fieldbook_AAF.xlsx")),
+                                    sheet = "codes") |> 
   as_tibble() |> 
   filter(!is.na(ps_taxon_code))
 
@@ -220,15 +221,15 @@ fish_lut <- bdc::bdc_clean_names(fish_lut$taxon) %>%
 
 ```{r gnr}
 gnr_fish <-  taxize::gnr_resolve(fish_lut$taxon_clean, 
-                      canonical = F,
-                      with_canonical_ranks = T,
-                      data_source_ids = c(9)) %>% # Worms = 9
+                                 canonical = F,
+                                 with_canonical_ranks = T,
+                                 data_source_ids = c(9)) %>% # Worms = 9
   filter(submitted_name != matched_name2) %>% 
   distinct(submitted_name, score, taxon_gnr = matched_name2) 
 
 gnr_fish <- gnr_fish |> 
   filter(!str_detect(taxon_gnr, c("Paraglyphipodon|forsteni")))
-                     
+
 fish_lut <- fish_lut |> 
   left_join(gnr_fish,
             by = c("taxon_clean" = "submitted_name")) |> 
@@ -258,7 +259,7 @@ worms_names <- worms_names %>%
 
 fish_lut <- fish_lut |> 
   left_join(worms_names) 
-  
+
 fish_lut |> 
   filter(taxon_valid_name != taxon_gnr | taxon != taxon_gnr) 
 ```
@@ -271,8 +272,8 @@ taxonomy_worms <- fish_lut$taxon_valid_name %>%
   filter(!is.na(scientificname)) %>% 
   mutate(rank = str_to_lower(rank),
          taxon_id = if_else(!is.na(valid_aphia_id),
-                              paste0("WORMS:", valid_aphia_id),
-                              NA_character_)) %>% 
+                            paste0("WORMS:", valid_aphia_id),
+                            NA_character_)) %>% 
   select(taxon_valid_name = scientificname, status, taxon_rank = rank, taxon_id, taxon_authority = valid_authority, kingdom, phylum, class, order, family, genus) %>% 
   distinct()
 
@@ -287,7 +288,7 @@ taxonomy_worms <- taxonomy_worms %>%
   group_by(taxon_valid_name) %>% 
   filter(n() <= 1) %>% # remove duplicates
   bind_rows(deduped_taxonomy)  # add deduped
-  
+
 fish_lut <- fish_lut |> 
   left_join(taxonomy_worms |> 
               select(-status))
@@ -346,14 +347,14 @@ fish_lut %>%
 
 ```{r trophic_group}
 fish_trophic_group <- read_csv(file.path(ps_science_path, 
-                                  "expeditions", 
-                                  "SLI-2023", 
-                                  "data/primary/raw/fish/Pacific_Indian_LW_params_21Sept2021.csv")) |> 
+                                         "expeditions", 
+                                         "SLI-2023", 
+                                         "data/primary/raw/fish/Pacific_Indian_LW_params_21Sept2021.csv")) |> 
   janitor::clean_names() |> 
   distinct(taxon, taxon_code = new_name, common_family, consumer, trophic, trophic_detailed, family, genus)
 
 trophic_group_adds <- read_csv(file.path(exp_path,
-                                  "data/primary/raw/fish/missing_trophic_info_AMF.csv")) |> 
+                                         "data/primary/raw/fish/missing_trophic_info_AMF.csv")) |> 
   janitor::clean_names() |> 
   distinct(taxon = taxon_valid_name, taxon_code, common_family, consumer, trophic, trophic_detailed, family, genus)
 
@@ -440,14 +441,14 @@ amf_fish_obs <- readxl::read_xlsx(file.path(exp_path,
                                                    "_fish_fieldbook_AMF.xlsx")),
                                   sheet = "obs") |> 
   as_tibble()
-  
+
 aaf_fish_obs <- readxl::read_xlsx(file.path(exp_path, 
-                                        paste0("data/primary/raw/fish/",
-                                               exp_id,
-                                               "_fish_fieldbook_AAF.xlsx")),
+                                            paste0("data/primary/raw/fish/",
+                                                   exp_id,
+                                                   "_fish_fieldbook_AAF.xlsx")),
                                   sheet = "obs") |> 
   as_tibble()
-  
+
 fish_obs <- bind_rows(amf_fish_obs, aaf_fish_obs) |> 
   rename(uvs_id = ps_station_id,
          reel = transect) |> 
@@ -549,7 +550,7 @@ summary_by_transect <- biomass_by_transect_and_taxa |>
             gr_m2 = sum(gr_m2)) |>
   ungroup() |> 
   left_join(fish_meta |> distinct(ps_site_id, location, exposure, habitat)) |> 
-    left_join(biomass_by_obs |> 
+  left_join(biomass_by_obs |> 
               group_by(ps_site_id, depth_strata, depth_m, diver) |> 
               summarize(n_reels = n_distinct(reel))) |> 
   select(ps_site_id, depth_strata, depth_m, diver, n_reels, everything())
@@ -613,36 +614,36 @@ summary_by_transect |>
 library(highcharter)
 
 lvl_opts <-  list(
-    list(
-      level = 1,
-      borderWidth = 0,
-      borderColor = "transparent",
-      dataLabels = list(
-        enabled = TRUE,
-        align = "left",
-        verticalAlign = "top",
-        style = list(
-          fontSize = "12px", 
-          textOutline = FALSE,
-          color = "white",
-          fontWeight = "normal"
-          )
-      )
-    ),
-    list(
-      level = 2,
-      borderWidth = 0,
-      borderColor = "transparent",
-      colorVariation = list(key = "brightness", to = 0.250),
-      dataLabels = list(enabled = FALSE),
+  list(
+    level = 1,
+    borderWidth = 0,
+    borderColor = "transparent",
+    dataLabels = list(
+      enabled = TRUE,
+      align = "left",
+      verticalAlign = "top",
       style = list(
-        fontSize = "9px",
-        textOutline = FALSE, 
-        color = "white", 
+        fontSize = "12px", 
+        textOutline = FALSE,
+        color = "white",
         fontWeight = "normal"
-        )
+      )
+    )
+  ),
+  list(
+    level = 2,
+    borderWidth = 0,
+    borderColor = "transparent",
+    colorVariation = list(key = "brightness", to = 0.250),
+    dataLabels = list(enabled = FALSE),
+    style = list(
+      fontSize = "9px",
+      textOutline = FALSE, 
+      color = "white", 
+      fontWeight = "normal"
     )
   )
+)
 
 hc_data <- summary_by_taxa |> 
   mutate(n = 1) |> 
@@ -650,10 +651,10 @@ hc_data <- summary_by_taxa |>
   data_to_hierarchical(c(order, common_family), n)
 
 diversity_treemap <- hchart(hc_data,
-  type = "treemap",
-  allowDrillToNode = TRUE,
-  levels = lvl_opts,
-  tooltip = list(valueDecimals = FALSE)) |> 
+                            type = "treemap",
+                            allowDrillToNode = TRUE,
+                            levels = lvl_opts,
+                            tooltip = list(valueDecimals = FALSE)) |> 
   hc_chart(style = list(fontFamily = "Times New Roman")) |> 
   hc_title(text = "Number of fish species by order and family",
            style = list(fontFamily = "Times New Roman")) |> 
@@ -668,7 +669,8 @@ diversity_treemap
 ggstatsplot::ggbetweenstats(data = summary_by_transect, x = location, y = n_taxa, 
                             type = "nonparametric",
                             title = "Species diversity per transect by island", 
-                            xlab = "")
+                            xlab = "",
+                            ggplot.component = list(scale_color_manual(values = ps_palettes$location)))
 ```
 
 ```{r diversity_adonis, include = T, eval = T}
@@ -695,11 +697,15 @@ broom::tidy(fish_diversity_adonis) %>%
 ```{r diversity_boxplot_by_exposure, include = T, eval = T, fig.width=10, fig.height=10}
 #| label: fig-diversity-boxplot-by-exposure
 #| fig-cap: "Species richnnes by exposure by island"
-ggstatsplot::grouped_ggbetweenstats(data = summary_by_transect, x = exposure, y = n_taxa, grouping.var = location,
+ggstatsplot::grouped_ggbetweenstats(data = summary_by_transect, 
+                                    x = exposure, 
+                                    y = n_taxa, 
+                                    grouping.var = location,
                                     type = "nonparametric",
                                     xlab = "", ylab = "",
                                     annotation.args = list(title = "Species richnnes by exposure by island"),
-                                    plotgrid.args = list(nrow = 3))
+                                    plotgrid.args = list(nrow = 3),
+                                    ggplot.component = list(scale_color_manual(values = ps_palettes$exposure)))
 ```
 
 ## Abundance
@@ -710,7 +716,8 @@ ggstatsplot::grouped_ggbetweenstats(data = summary_by_transect, x = exposure, y 
 ggstatsplot::ggbetweenstats(data = summary_by_transect, x = location, y = ind_m2, 
                             type = "nonparametric",
                             title = "Fish abundance by island", 
-                            xlab = "")
+                            xlab = "",
+                            ggplot.component = list(scale_color_manual(values = ps_palettes$location)))
 ```
 
 ```{r abundance_adonis, include = T, eval = T}
@@ -753,7 +760,8 @@ ggstatsplot::grouped_ggbetweenstats(data = summary_by_transect,
                                     type = "nonparametric",
                                     xlab = "", ylab = "",
                                     annotation.args = list(title = "Fish abundance by exposure by island"),
-                                    plotgrid.args = list(nrow = 3))
+                                    plotgrid.args = list(nrow = 3),
+                                    ggplot.component = list(scale_color_manual(values = ps_palettes$exposure)))
 ```
 
 ## Biomass
@@ -764,7 +772,8 @@ ggstatsplot::grouped_ggbetweenstats(data = summary_by_transect,
 ggstatsplot::ggbetweenstats(data = summary_by_transect, x = location, y = gr_m2, 
                             type = "nonparametric",
                             title = "Fish biomass by location", 
-                            xlab = "", ylab = "Fish biomass (g/m2)")
+                            xlab = "", ylab = "Fish biomass (g/m2)",
+                            ggplot.component = list(scale_color_manual(values = ps_palettes$location)))
 ```
 
 ```{r biomass_adonis, include = T, eval = T}
@@ -796,7 +805,8 @@ ggstatsplot::grouped_ggbetweenstats(data = summary_by_transect,
                                     type = "nonparametric",
                                     xlab = "", ylab = "",
                                     annotation.args = list(title = "Fish biomass by depth strata and island"),
-                                    plotgrid.args = list(nrow = 3)) 
+                                    plotgrid.args = list(nrow = 3),
+                                    ggplot.component = list(scale_color_manual(values = ps_palettes$depth_strata))) 
 ```
 
 ### By exposure
@@ -810,7 +820,8 @@ ggstatsplot::grouped_ggbetweenstats(data = summary_by_transect,
                                     type = "nonparametric",
                                     xlab = "",
                                     annotation.args = list(title = "Fish biomass by exposure and island"),
-                                    plotgrid.args = list(nrow = 3)) 
+                                    plotgrid.args = list(nrow = 3),
+                                    ggplot.component = list(scale_color_manual(values = ps_palettes$exposure))) 
 ```
 
 ```{r biomas_tbl_by_exposure, include = T, eval = T }
@@ -846,20 +857,51 @@ summary_by_transect |>
 ```{r biomass_by_fam, include = T, eval = T}
 #| label: fig-biomass-treemap
 #| fig-cap: "Biomass by family"
-hc_data <- summary_by_taxa |> 
-  mutate_if(is.numeric, round, 1) |> 
-  data_to_hierarchical(c(common_family, taxon_valid_name), gr_m2)
 
-hchart(hc_data,
-       type = "treemap",
-       allowDrillToNode = TRUE,
-       levels = lvl_opts,
-       tooltip = list(valueDecimals = 1)) |> 
+create_family_pal <- function(col, n){
+  col <- unique(col)
+  
+  foo <- scales::colour_ramp(c(adjust_luminance(color = col, steps = +2),
+                      adjust_luminance(color = col, steps = -.5)))
+  
+  foo(seq(0, 1, length = n))
+}
+
+
+taxa_colors <- summary_by_taxa |> 
+  distinct(common_family, taxon_valid_name, gr_m2) |> 
+  mutate(color_fam = colorize(common_family, 
+                              paletteer_d("ggsci::default_igv", direction = -1, n = 43))) |> 
+  arrange(desc(common_family)) |> 
+  group_by(common_family) |> 
+  arrange(desc(gr_m2)) |> 
+  mutate(n_taxa = n_distinct(taxon_valid_name),
+         color_sp = colorize(taxon_valid_name,
+                             colors = create_family_pal(col = color_fam, n = n_taxa))) |> 
+  ungroup()
+
+hc_data <- summary_by_taxa |> 
+  left_join(taxa_colors |> select(taxon_valid_name, color_fam, color_sp)) |> 
+  filter(!is.na(color_sp)) |> 
+  mutate_if(is.numeric, round, 1) |> 
+  arrange(desc(common_family)) |> 
+  group_by(common_family) |> 
+  arrange(desc(gr_m2)) 
+
+
+data_to_hierarchical(hc_data,
+                     c(common_family, taxon_valid_name), 
+                     gr_m2, colors = unique(hc_data$color_fam)) |> 
+  hchart(
+    type = "treemap",
+    allowDrillToNode = TRUE,
+    levels = lvl_opts,
+    tooltip = list(valueDecimals = 1)) |> 
   hc_chart(style = list(fontFamily = "Times New Roman")) |> 
   hc_title(text = "Fish biomass by family",
            style = list(fontFamily = "Times New Roman")) |> 
   hc_size(height = 500) |> 
-  hc_tooltip(crosshairs = T)
+  hc_tooltip(crosshairs = T) 
 ```
 
 ```{r biomas_tbl_by_fam}
@@ -894,6 +936,11 @@ summary_by_taxa |>
 ```{r biomas_bar_by_fam, include = T, eval = T}
 #| label: fig-biomass-bar
 #| fig-cap: "Biomass by family and depth strata"
+
+fam_colors <- taxa_colors |> 
+  distinct(common_family, color_fam) |> 
+  deframe()
+
 tmp_df <- biomass_by_transect_and_taxa |> 
   left_join(fish_lut |> 
               distinct(taxon_valid_name, common_family )) |> 
@@ -914,12 +961,13 @@ tmp_plot <- tmp_df |>
   coord_flip()+
   facet_wrap("location", ncol = 1, strip.position = "left")+
   labs(x = "", y = "", fill = "", title = "Average fish biomass by family")+
-  paletteer::scale_fill_paletteer_d("ggsci::default_igv")+
+  scale_fill_manual(values = fam_colors)+
+  #paletteer::scale_fill_paletteer_d("ggsci::default_igv", direction = -1)+
   ggthemes::theme_hc()+
   guides(fill = guide_legend(ncol = 2, position = "right"))+
   theme(legend.text = element_text(size = 6),
         legend.key.size = unit(.5, "lines"),
-        legend.margin=margin(0,0,0,0))+
+        legend.margin = margin(0,0,0,0))+
   theme(strip.placement = "outside")
 
 ggiraph::girafe(ggobj = tmp_plot)
@@ -949,15 +997,20 @@ tmp_plot <- biomass_by_transect_and_taxa |>
   facet_wrap("location", ncol = 1, strip.position = "left")+
   labs(x = "", y = "", fill = "", title = "Average fish biomass by trophic group")+
   ggthemes::theme_hc()+
-  paletteer::scale_fill_paletteer_d("ggthemes::Tableau_10", na.value = "grey")+
+  scale_fill_manual(values = ps_palettes$trophic)+
+  scale_y_continuous(expand = c(0, 0))+
   guides(fill = guide_legend(ncol = 1, position = "right"))+
   theme(legend.text = element_text(size = 6),
         legend.key.size = unit(.5, "lines"),
         legend.margin=margin(0,0,0,0))+
-  theme(strip.placement = "outside",
+  theme(plot.title = element_text(hjust= -0.6),
+        strip.placement = "outside",
         strip.text = element_text(face = "bold"))
 
 ggiraph::girafe(ggobj = tmp_plot)
+
+ggsave(tmp_plot, 
+       filename =file.path(exp_path, "figures/fish_biomass_by_trophic_and_strata.pdf"))
 ```
 
 ### By species
@@ -979,7 +1032,7 @@ tmp_plot <- summary_by_taxa |>
                                       size = gr_m2, 
                                       col = trophic, 
                                       tooltip = tooltip))+
-  paletteer::scale_colour_paletteer_d("ggthemes::Tableau_10", na.value = "grey")+
+  scale_color_manual(values = ps_palettes$trophic)+
   scale_y_log10()+
   labs(y = "Abundance (Ind x 100m2)", x = "Frequency (% station-strata)", col = "Trophic group", size = "Biomass")+
   ggthemes::theme_hc()+
@@ -1001,11 +1054,11 @@ gr_m2_data_wide <- biomass_by_transect_and_taxa %>%
   column_to_rownames("strata_id")
 
 gr_m2_dist <- vegan::vegdist(as.matrix(gr_m2_data_wide), 
-                      method = "bray") 
+                             method = "bray") 
 
 community_adonis <- vegan::adonis2(gr_m2_dist ~  location + exposure + habitat + depth_strata,
-        data = summary_by_transect,
-        by = "margin")
+                                   data = summary_by_transect,
+                                   by = "margin")
 
 broom::tidy(community_adonis) %>% 
   mutate_if(is.numeric, round, 3) %>% 
@@ -1015,22 +1068,22 @@ broom::tidy(community_adonis) %>%
               data_row.padding = px(5))
 ```
 
-```{r pcoa_plot, include = T, eval = T, fig.width = 10, fig.height = 10}
+```{r pcoa_plot, include = T, eval = T, fig.width = 8, fig.height = 8}
 #| label: fig-pcoa
 #| fig-cap: "Principal coordinates analysis"
 library(vegan)
 
 gr_m2_pcoa_c <- vegan::dbrda(gr_m2_dist ~ location + exposure + depth_strata + habitat, 
-                      data = summary_by_transect,
-                      dist = "bray", 
-                      add = "lingoes")
+                             data = summary_by_transect,
+                             dist = "bray", 
+                             add = "lingoes")
 
 gr_m2_pcoa_c_env_fit <- vegan::envfit(gr_m2_pcoa_c, 
-                               summary_by_transect %>% 
-                                 select(location, exposure, depth_strata, habitat))
+                                      summary_by_transect %>% 
+                                        select(location, exposure, depth_strata, habitat))
 
 gr_m2_pcoa_c_spp_fit <- vegan::envfit(gr_m2_pcoa_c, 
-                               gr_m2_data_wide)
+                                      gr_m2_data_wide)
 
 gr_m2_pcoa_c_spp_scores <- gr_m2_pcoa_c_spp_fit %>% 
   vegan::scores("vectors") %>% 
@@ -1044,7 +1097,7 @@ gr_m2_pcoa_c_axis <- BiodiversityR::axis.long(gr_m2_pcoa_c, choices = c(1, 2))
 gr_m2_pcoa_c_site_scores <- vegan::scores(gr_m2_pcoa_c)$sites %>% 
   as_tibble(rownames = "strata_id") %>% 
   inner_join(summary_by_transect |>
-                 mutate(strata_id = paste(ps_site_id, depth_strata, diver, sep = "_")))
+               mutate(strata_id = paste(ps_site_id, depth_strata, diver, sep = "_")))
 
 ggplot() +
   geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
@@ -1061,27 +1114,27 @@ ggplot() +
                size = 0.2, 
                arrow = arrow(length = unit(0.01, "npc"), 
                              type = 'open', ends = "last"))+
-      ggrepel::geom_text_repel(data = gr_m2_pcoa_c_spp_scores %>% 
-                                 filter(p < 0.05, r > 0.25), 
-                               aes(x=dbRDA1*3, y=dbRDA2*3, label = ps_taxon_code, alpha = r),
-                               colour="black",
-                               show.legend = F)+ 
-      coord_fixed(ratio=1)+
-      labs(color = "", alpha = bquote('R'^'2'))+
-      ggforce::geom_mark_ellipse(data = gr_m2_pcoa_c_site_scores, 
-                                 aes(x=dbRDA1, y = dbRDA2, colour = location, 
-                                     fill=after_scale(alpha(colour, 0.01))), 
-                                 expand=0, size=0.2, show.legend=FALSE)+
-      theme(panel.background = element_blank(),
-            panel.border = element_blank(),
-            panel.grid = element_blank(),
-            axis.line = element_line("gray25"),
-            text = element_text(size = 12),
-            axis.text = element_text(size = 10, colour = "gray25"),
-            axis.title = element_text(size = 12, colour = "gray25"),
-            legend.key = element_blank())+
-      paletteer::scale_colour_paletteer_d(palette = "MetBrewer::Juarez")+
-      scale_alpha(range=c(0.6,1))
+  ggrepel::geom_text_repel(data = gr_m2_pcoa_c_spp_scores %>% 
+                             filter(p < 0.05, r > 0.25), 
+                           aes(x=dbRDA1*3, y=dbRDA2*3, label = ps_taxon_code, alpha = r),
+                           colour="black",
+                           show.legend = F)+ 
+  coord_fixed(ratio=1)+
+  labs(color = "", alpha = bquote('R'^'2'))+
+  ggforce::geom_mark_ellipse(data = gr_m2_pcoa_c_site_scores, 
+                             aes(x=dbRDA1, y = dbRDA2, colour = location, 
+                                 fill=after_scale(alpha(colour, 0.01))), 
+                             expand=0, size=0.2, show.legend=FALSE)+
+  theme(panel.background = element_blank(),
+        panel.border = element_blank(),
+        panel.grid = element_blank(),
+        axis.line = element_line("gray25"),
+        text = element_text(size = 12),
+        axis.text = element_text(size = 10, colour = "gray25"),
+        axis.title = element_text(size = 12, colour = "gray25"),
+        legend.key = element_blank())+
+  scale_color_manual(values = ps_palettes$location)+
+  scale_alpha(range=c(0.6,1))
 
 ggsave(file.path(exp_path, "figures", "fish_biomass_pcoa_by_location.pdf"), width = 10, height = 10)
 ```
