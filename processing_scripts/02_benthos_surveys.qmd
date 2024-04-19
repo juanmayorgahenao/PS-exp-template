@@ -15,7 +15,10 @@ library(paletteer)
 library(sf)
 library(bigrquery)
 library(gt)
+library(pointblank)
 library(tidyverse)
+library(PristineSeasR)
+library(mapview)
 
 knitr::opts_chunk$set(eval = F, warning = F, message = F, include = F, echo = F)
 
@@ -62,9 +65,7 @@ lpi_transects <- readxl::read_excel(file.path(exp_path,
   column_to_rownames(var = "x1") %>% 
   t() |> 
   as_tibble() %>% 
-  remove_rownames() 
- 
-lpi_transects <- lpi_transects |> 
+  remove_rownames() |> 
   mutate(date = as.Date(as.numeric(date), origin = "1899-12-30"),
          transect = str_extract(transect, "[A-Z]+"),
          site_number = as.numeric(site_number),
@@ -99,7 +100,7 @@ lpi_obs <- readxl::read_excel(file.path(exp_path,
   t() %>% 
   as_tibble()
 
-lpi_transects <- lpi_transects |> 
+lpi_obs <- lpi_transects |> 
   cbind(lpi_obs) |> 
   pivot_longer(-c(date, ps_site_id, uvs_id, transect, depth_m, transect_section, section_length_m), 
                names_to = "taxon", 
@@ -107,12 +108,22 @@ lpi_transects <- lpi_transects |>
   mutate(pts = as.numeric(pts)) |>
   replace_na(list(pts = 0)) |> 
   ungroup() |> 
-  group_by(date, ps_site_id, uvs_id, transect, depth_m, transect_section, section_length_m) %>% 
-  summarise(pts = sum(pts)) %>% 
-  ungroup()
+  select(date, uvs_id, ps_site_id, depth_m, transect, transect_section, section_length_m, taxon, pts)
 
+lpi_transects <- lpi_obs |> 
+  group_by(date, ps_site_id, uvs_id, transect, depth_m, transect_section, section_length_m) %>% 
+  summarise(coral_pts = sum(pts[taxon == "Hard coral"]),
+            pts = sum(pts)) %>% 
+  ungroup() |> 
+  filter(pts > 0) 
+
+lpi_obs <- lpi_obs |> 
+  inner_join(lpi_transects |> 
+               select(ps_site_id, depth_m, transect, transect_section))
+```
+
+```{r lpi_meta, eval = TRUE, include = F}
 lpi_meta <- lpi_transects |> 
-  filter(pts > 0) |> 
   group_by(date, ps_site_id, uvs_id, transect, depth_m) |> 
   summarise(transect_length_m = sum(section_length_m),
             n_sections = n(),
@@ -132,13 +143,6 @@ lpi_meta <- lpi_meta |>
          transect, depth_strata, depth_m, transect_length_m, n_sections, pts, uvs_id , alternative_site_id, diver = team_lead) |>
   ungroup() |> 
   arrange(ps_site_id)
-```
-
-```{r eval = F, include = F}
-fish_meta |> 
-  anti_join(lpi_meta |> 
-              select(uvs_id, depth_strata)) |> 
-  select(uvs_id, depth_strata, exposure)
 ```
 
 ```{r lpi_map, eval = TRUE, include = T}
@@ -200,5 +204,289 @@ bq_table_create(paste0("pristine-seas.metadata.",exp_id, "_lpi"),
 
 bigrquery::bq_table_upload(paste0("pristine-seas.metadata.",exp_id, "_lpi"), 
                            values = lpi_meta, fields = lpi_meta)
+```
+
+# QA/QC
+
+## Merge with coral data
+
+```{r read_corals}
+hc_transects <- readxl::read_xlsx(file.path(exp_path,
+                                                      "data/primary/raw/benthos/PLW_2024_lpi_fieldsheet_Eve_25Feb_Preliminary.xlsx"),
+                                               skip = 3, 
+                                               col_names = F, 
+                                               range = "A1:PK4") |> 
+  as_tibble() |> 
+  janitor::clean_names() |> 
+  column_to_rownames(var = "x1") %>% 
+  t() |> 
+  as_tibble() %>% 
+  remove_rownames() |> 
+  mutate(uvs_id = paste0(exp_id, "_uvs_",
+                         formatC(as.numeric(str_extract(as.numeric(site_number), "[0-9]+")), 
+                                 width = 2, flag = 0)),
+         depth_m = as.numeric(depth_m),
+         transect_section = as.factor(transect_section)) |> 
+  select(uvs_id, depth_m, transect, transect_section)
+
+hc_obs <- readxl::read_xlsx(file.path(exp_path,
+                                       "data/primary/raw/benthos/PLW_2024_lpi_fieldsheet_Eve_25Feb_Preliminary.xlsx"),
+                             col_names = F, 
+                             range = "A6:PK91") %>% 
+  janitor::clean_names() %>% 
+  filter(!is.na(x1), x1 != "TOTAL") %>% 
+  column_to_rownames(var = "x1") %>% 
+  t() %>% 
+  as_tibble()
+
+hc_obs <- bind_cols(hc_transects, hc_obs) |> 
+  pivot_longer(-c(uvs_id, depth_m, transect, transect_section), 
+               names_to = "taxon", 
+               values_to = "pts", values_drop_na = FALSE) |>
+  mutate(pts = as.numeric(pts)) |>
+  replace_na(list(pts = 0)) |> 
+  ungroup() |> 
+  select(uvs_id, depth_m, transect, transect_section, taxon, pts)
+
+hc_transects <- hc_obs |> 
+  group_by(uvs_id, transect, depth_m, transect_section) %>% 
+  summarise(coral_pts_2 = sum(pts)) %>% 
+  ungroup() |> 
+  filter(coral_pts_2 > 0) 
+
+hc_transects |> 
+  anti_join(lpi_transects)
+
+lpi_transects |> 
+  anti_join(hc_transects)
+```
+
+```{r hc_factors, eval = F}
+hc_factors <- lpi_transects |> 
+  left_join(hc_transects) |> 
+  mutate(factor = if_else(coral_pts > 0, round(coral_pts/coral_pts_2, 2), 0),
+         taxon = "Hard coral") |> 
+  select(uvs_id, depth_m, transect, transect_section, taxon, coral_pts, coral_pts_2, factor)
+
+hc_factors_plot <- hc_factors |> 
+  mutate(tooltip = c(paste0("Site id = ", uvs_id,
+                            "\n Depth (m) = ", depth_m,
+                            "\n Transect = ", transect,
+                            "\n Transect section = ", transect_section,
+                            "\n Ratio = ", factor))) |> 
+  ggplot()+
+  geom_abline (slope = 1, linetype = "dashed", color="Red")+
+  ggiraph::geom_point_interactive(aes(x = coral_pts, 
+                                      y = coral_pts_2, 
+                                      size = factor, 
+                                      tooltip = tooltip))+
+  labs(y = "Eve", x = "Quim", title = "Coral contacts by transect segment")+
+  ggthemes::theme_hc()+
+  theme(legend.title.position = "top", legend.position = "right")
+
+ggiraph::girafe(ggobj = hc_factors_plot)
+```
+
+```{r combine_tbl}
+hc_obs_adj <- hc_obs |> 
+  left_join(hc_factors |> 
+              filter(!is.na(factor)) |> 
+              distinct(uvs_id, depth_m, transect, transect_section, factor)) |> 
+  filter(!is.na(factor)) |> 
+  mutate(pts = pts*factor,
+         group = "Hard coral") |> 
+  select(-factor)
+
+full_lpi_data <- lpi_obs |> 
+  select(-section_length_m, - date) |> 
+  anti_join(hc_factors |> 
+              filter(!is.na(factor))) |> 
+  bind_rows(hc_obs_adj) |> 
+  mutate(depth_strata = case_when(depth_m <= 5 ~ "Supershallow",
+                                  depth_m <= 15 ~ "Shallow",
+                                  depth_m > 15 ~ "Deep")) |> 
+  group_by(ps_site_id, uvs_id, depth_strata, depth_m, transect, transect_section) %>% 
+  mutate(p_cover = round(100*pts/sum(pts, na.rm = T), 2)) %>% 
+  ungroup() |> 
+  select(ps_site_id, uvs_id, depth_strata, depth_m, transect, transect_section, taxon, pts, p_cover)
+```
+
+```{r lpi_qc}
+# Is the original sum of points preserved? Should be 0 rows
+
+full_lpi_data |> 
+  group_by(uvs_id, depth_strata, depth_m, transect, transect_section) |> 
+  summarize(pts = round(sum(pts, na.rm = T))) |> 
+  arrange(uvs_id, transect, transect_section) |> 
+  anti_join(lpi_transects)
+
+# Are transect still 250 points?
+
+full_lpi_data |> 
+  group_by(uvs_id, depth_strata, depth_m, transect) |> 
+  summarize(pts = round(sum(pts, na.rm = T))) |> 
+  arrange(desc(pts)) |> 
+  mutate_if(is.numeric, round) |> 
+  filter(pts != 250)
+
+# Are segments 50 points?
+
+full_lpi_data |>
+  group_by(uvs_id, depth_strata, depth_m, transect, transect_section) |> 
+  summarize(pts = round(sum(pts, na.rm = T))) |> 
+  mutate_if(is.numeric, round, 2) |> 
+  arrange(desc(pts)) |> 
+  filter(pts != 50)
+```
+
+```{r obs_export, eval = F}
+full_lpi_data |> 
+  write_csv(file.path(exp_path, "data/primary/processed/lpi_data.csv"))
+
+bq_table_create(paste0("pristine-seas.benthic_cover.",exp_id, "_lpi"), 
+                fields = as_bq_fields(full_lpi_data))
+
+bigrquery::bq_table_upload(paste0("pristine-seas.benthic_cover.",exp_id, "_lpi"), 
+                           values = full_lpi_data, fields = full_lpi_data)
+```
+
+## Taxa list
+
+```{r clean_names}
+lpi_taxa <- full_lpi_data |> 
+  filter(taxon != "Hard coral") |> 
+  distinct(taxon) 
+  
+lpi_taxa <- bdc::bdc_clean_names(lpi_taxa$taxon) %>% 
+  janitor::clean_names() %>% 
+  select(taxon = scientific_name, 
+         taxon_clean = names_clean) %>% 
+  mutate(taxon_clean = coalesce(taxon_clean, 
+                                taxadb::clean_names(taxon, lowercase = F))) %>% 
+  distinct(taxon, taxon_clean) |> 
+  mutate(taxon_clean = str_remove_all(taxon_clean,
+                                      "unidentified") |> 
+           str_squish())
+
+lpi_taxa <- lpi_taxa |> 
+  mutate(taxon_clean = case_when(str_detect(taxon_clean, "sponge") ~ "Porifera",
+                                 str_detect(taxon_clean, "anemon") ~ "Actiniaria",
+                                 str_detect(taxon_clean, "CCA") ~ "Corallinales",
+                                 taxon_clean == "Red encrusting alga" ~ "Rhodophyta",
+                                 str_detect(taxon_clean, "EAM") ~ "Ephilitihic Algal Matrix",
+                                 TRUE ~ taxon_clean)) 
+
+lpi_taxa |> 
+  filter(taxon != taxon_clean)
+```
+
+```{r gnr}
+algae_gnr <-  taxize::gnr_resolve(lpi_taxa$taxon_clean, 
+                                  canonical = F,
+                                  with_canonical_ranks = T,
+                                  data_source_ids = c(195)) %>% # ALGAE BASE
+  filter(submitted_name != matched_name2) %>% 
+  distinct(submitted_name, score, taxon_gnr = matched_name2)
+
+not_algae_gnr <- lpi_taxa %>% 
+  filter(!taxon_clean %in% algae_gnr$submitted_name) %>% 
+  pull(taxon_clean) %>% 
+  taxize::gnr_resolve(canonical = F,
+                      with_canonical_ranks = T,
+                      data_source_ids = c(9)) %>% # WORMS 
+  filter(submitted_name != matched_name2) %>% 
+  distinct(submitted_name, score, taxon_gnr = matched_name2) |> 
+  filter(str_count(taxon_gnr, '\\w+') > 1) 
+
+lpi_taxa <- lpi_taxa %>% 
+  left_join(not_algae_gnr,
+            by = c("taxon_clean" = "submitted_name")) %>% 
+  mutate(taxon_gnr = coalesce(taxon_gnr, taxon_clean)) %>% 
+  select(-score) %>% 
+  left_join(algae_gnr %>% 
+              rename(taxon_gnr_algae = taxon_gnr),
+            by = c("taxon_clean" = "submitted_name")) %>% 
+  mutate(taxon_gnr = coalesce(taxon_gnr_algae, taxon_gnr)) %>% 
+  select(-score, -taxon_gnr_algae)  
+```
+
+```{r worms_names}
+worms_names <- lpi_taxa$taxon_gnr %>% 
+  split(ceiling(seq_along(lpi_taxa$taxon_gnr)/20)) %>% 
+  furrr::future_map_dfr(worrms::wm_records_names) %>% 
+  janitor::clean_names() |> 
+  filter(!is.na(scientificname)) |> 
+  select(taxon_gnr = scientificname, status, taxon_valid_name = valid_name) |> 
+  filter(taxon_gnr != taxon_valid_name)
+
+duped_worms_names <- worms_names %>% 
+  janitor::get_dupes(taxon_gnr) 
+
+deduped_worms_names <- duped_worms_names %>% 
+  filter(status %in% c("accepted")) %>% 
+  select(-dupe_count)
+
+worms_names <- worms_names %>% 
+  group_by(taxon_gnr) %>% 
+  filter(n() <= 1) %>% # remove duplicates
+  bind_rows(deduped_worms_names)
+
+lpi_taxa <- lpi_taxa |> 
+  left_join(worms_names) |> 
+  mutate(taxon_valid_name = coalesce(taxon_valid_name, taxon_gnr)) |> 
+  select(taxon, taxon_gnr, taxon_valid_name)
+```
+
+```{r worms_taxonomy}
+taxonomy_worms <- lpi_taxa$taxon_valid_name %>% 
+  split(ceiling(seq_along(lpi_taxa$taxon_valid_name)/20)) %>% 
+  furrr::future_map_dfr(worrms::wm_records_names) %>% 
+  janitor::clean_names() %>% 
+  filter(!is.na(scientificname)) %>% 
+  mutate(rank = str_to_lower(rank),
+         taxon_id = if_else(!is.na(valid_aphia_id),
+                            paste0("WORMS:", valid_aphia_id),
+                            NA_character_)) %>% 
+  select(taxon_valid_name = scientificname, status, taxon_rank = rank, taxon_id, taxon_authority = valid_authority, kingdom, phylum, class, order, family, genus) %>% 
+  distinct()
+
+duped_taxonomy <- taxonomy_worms %>% 
+  janitor::get_dupes(taxon_valid_name) 
+
+deduped_taxonomy <- duped_taxonomy %>% 
+  filter(status %in% c("accepted"), taxon_rank == "genus", family != "Sargassaceae", taxon_id != "WORMS:426070") %>% 
+  select(-dupe_count)
+
+taxonomy_worms <- taxonomy_worms %>% 
+  group_by(taxon_valid_name) %>% 
+  filter(n() <= 1) %>% # remove duplicates
+  bind_rows(deduped_taxonomy)  # add deduped
+
+lpi_taxa <- lpi_taxa |> 
+  left_join(taxonomy_worms |> 
+              select(-status))
+```
+
+```{r func_group}
+groups <- c("Barren", "Sediment", "Turf", "Hard coral")
+
+lpi_taxa <- lpi_taxa |> 
+  mutate(group = case_when(taxon_valid_name %in% groups ~ taxon_valid_name,
+                           taxon_valid_name == "Ephilitihic Algal Matrix" ~ "EAM",
+                           taxon_valid_name == "Corallinales" ~ "CCA",
+                           taxon %in% hc_obs_adj$taxon ~ "Hard coral",
+                           TRUE ~ NA_character_)) |> 
+  select(group, everything())
+```
+
+```{r taxa_export, eval = F}
+lpi_taxa |> 
+  write_csv(file.path(exp_path, "data/primary/processed/lpi_taxa.csv"))
+
+bq_table_create(paste0("pristine-seas.taxa.",exp_id, "_lpi"), 
+                fields = as_bq_fields(lpi_taxa))
+
+bigrquery::bq_table_upload(paste0("pristine-seas.taxa.",exp_id, "_lpi"), 
+                           values = lpi_taxa, fields = lpi_taxa)
 ```
 

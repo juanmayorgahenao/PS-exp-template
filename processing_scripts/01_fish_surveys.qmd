@@ -343,45 +343,90 @@ fish_lut <- fish_lut %>%
 
 fish_lut %>% 
   filter(is.na(a))
+
+fish_lut$a[fish_lut$taxon_code == "TRIM.SP"] <- 0.02639
+fish_lut$b[fish_lut$taxon_code == "TRIM.SP"] <- 2.62257 # from SIO
+
+fish_lut$a[fish_lut$taxon_code == "APOG.SP"] <- 0.01545
+fish_lut$b[fish_lut$taxon_code == "APOG.SP"] <- 3.12126 # from SIO
+fish_lut$max_length_tl[fish_lut$taxon_code == "APOG.SP"] <- 16
 ```
 
-```{r trophic_group}
-fish_trophic_group <- read_csv(file.path(ps_science_path, 
+```{r trophic_groups}
+fish_trophic_group_SIO <- read_csv(file.path(ps_science_path, 
                                          "expeditions", 
                                          "SLI-2023", 
                                          "data/primary/raw/fish/Pacific_Indian_LW_params_21Sept2021.csv")) |> 
   janitor::clean_names() |> 
-  distinct(taxon, taxon_code = new_name, common_family, consumer, trophic, trophic_detailed, family, genus)
+  distinct(taxon, taxon_code = new_name, common_family, consumer, trophic, trophic_detailed, family, genus) |> 
+  filter(!taxon %in% c("Acanthurus leucocheilus","Chromis amboinensis", "Neoglyphidodon melas", "Neoglyphidodon nigroris", "Trimma species", "Carangoides orthogrammus", "Sphyraena forsteri"))
 
 trophic_group_adds <- read_csv(file.path(exp_path,
                                          "data/primary/raw/fish/missing_trophic_info_AMF.csv")) |> 
   janitor::clean_names() |> 
+  distinct(taxon = taxon_valid_name, taxon_code, common_family, consumer, trophic, trophic_detailed, 
+           family, genus) |> 
+  filter(!taxon %in% c("Pycnochromis amboinensis", "Trimma", "Ferdauia orthogrammus", "Sphyraena forsteri"))
+
+trophic_group_adds_v2 <- read_csv(file.path(exp_path,
+                                         "data/primary/raw/fish/missing_trophic_AMF.csv")) |> 
+  janitor::clean_names() |> 
   distinct(taxon = taxon_valid_name, taxon_code, common_family, consumer, trophic, trophic_detailed, family, genus)
 
 fish_trophic_group <- trophic_group_adds |> 
-  bind_rows(fish_trophic_group |> 
+  bind_rows(fish_trophic_group_SIO |> 
               filter(!taxon_code %in% trophic_group_adds$taxon_code)) |> 
-  distinct() 
-
-fish_trophic_group <- fish_trophic_group |> 
+  bind_rows(trophic_group_adds_v2) |> 
   mutate(common_family = case_when(str_detect(taxon, "Pomacanthus") ~ "Angelfish",
                                    str_detect(taxon, "Pseudanthias") ~ "Anthias",
                                    str_detect(taxon, "Luzonichthys") ~ "Anthias",
                                    str_detect(taxon, "Eviota") ~ "Goby",
-                                   TRUE ~ common_family)) 
+                                   TRUE ~ common_family),
+        trophic = case_when(trophic == "Herbivores" ~ "Herbivore",
+                            trophic == "Lower-carnivores" ~ "Lower-carnivore",
+                            trophic == "Top-predators" ~ "Top-predator",
+                            TRUE ~ trophic)) |> 
+  filter(taxon_code != "CE.MULTF") |> 
+  filter(taxon != "Cheilodipterus isostigma") |> 
+  select(taxon, taxon_code, common_family, consumer, trophic, trophic_detailed) |> 
+  distinct()
 
+fish_trophic_group |> 
+  select(-taxon_code) |> 
+  distinct() |> 
+  janitor::get_dupes(taxon)
+
+fish_trophic_group |> 
+  select(-taxon) |> 
+  distinct() |> 
+  janitor::get_dupes(taxon_code)
+```
+
+```{r}
 fish_lut <- fish_lut |> 
   left_join(fish_trophic_group |> 
-              select(-genus, -family)) 
+              select(-taxon_code) |> 
+              distinct(), 
+            by = c("taxon_valid_name" = "taxon")) 
 
-genus_to_common_fam <- fish_trophic_group |> 
-  distinct(genus, genus_common_family = common_family)
+tmp_na <- fish_lut |> 
+  filter(is.na(trophic)) |> 
+  select(-c(common_family, consumer, trophic, trophic_detailed)) |> 
+  left_join(fish_trophic_group |> 
+              select(-taxon) |> 
+              distinct(), 
+            by = c("taxon_code")) 
 
 fish_lut <- fish_lut |> 
-  left_join(genus_to_common_fam) |> 
-  mutate(common_family = coalesce(common_family, genus_common_family)) |> 
-  select(-genus_common_family)
+  filter(!is.na(trophic)) |> 
+  bind_rows(tmp_na)
 
+fish_lut |> 
+  group_by(trophic) |> 
+  summarize(n_distinct(taxon_valid_name))
+```
+
+```{r common_fams}
 fish_lut <- fish_lut |> 
   mutate(common_family = case_when(str_detect(taxon, "Apogon|Archamia|Rhabdamia") ~ "Cardinalfish",
                                    str_detect(taxon, "Chaetodontoplus") ~ "Angelfish",
@@ -450,6 +495,7 @@ aaf_fish_obs <- readxl::read_xlsx(file.path(exp_path,
   as_tibble()
 
 fish_obs <- bind_rows(amf_fish_obs, aaf_fish_obs) |> 
+  filter(!is.na(n_ind)) |> 
   rename(uvs_id = ps_station_id,
          reel = transect) |> 
   mutate(ps_site_id = str_replace(uvs_id,  "uvs", "fish"),
@@ -457,7 +503,7 @@ fish_obs <- bind_rows(amf_fish_obs, aaf_fish_obs) |>
          depth_strata = case_when(depth_m <= 5 ~ "Supershallow",
                                   depth_m <= 15 ~ "Shallow",
                                   depth_m > 15 ~ "Deep"),
-         #max_tl_cm = if_else(max_tl_cm < min_tl_cm, min_tl_cm, max_tl_cm),
+         max_tl_cm = if_else(max_tl_cm < min_tl_cm, min_tl_cm, max_tl_cm),
          avg_tl_cm = (min_tl_cm + max_tl_cm)/2) |> 
   select(ps_site_id, everything(), notes)
 
@@ -648,7 +694,7 @@ lvl_opts <-  list(
 hc_data <- summary_by_taxa |> 
   mutate(n = 1) |> 
   mutate_if(is.numeric, round,2) |> 
-  data_to_hierarchical(c(order, common_family), n)
+  data_to_hierarchical(c(order, family), n)
 
 diversity_treemap <- hchart(hc_data,
                             type = "treemap",
@@ -706,6 +752,31 @@ ggstatsplot::grouped_ggbetweenstats(data = summary_by_transect,
                                     annotation.args = list(title = "Species richnnes by exposure by island"),
                                     plotgrid.args = list(nrow = 3),
                                     ggplot.component = list(scale_color_manual(values = ps_palettes$exposure)))
+```
+
+```{r taxa_venn, include = F, eval = F}
+#| label: fig-taxa-venn
+#| fig-cap: "Species overlap amongst islands"
+tmp <- biomass_by_transect_and_taxa |> 
+  left_join(fish_meta |> 
+              distinct(location, ps_site_id)) |> 
+  filter(ind_m2 > 0)
+
+taxa_by_island <- list(Helen = unique(tmp$taxon_valid_name[tmp$location == "Helen"]),
+                       Tobi = unique(tmp$taxon_valid_name[tmp$location == "Tobi"]),
+                       Sonsorol = unique(tmp$taxon_valid_name[tmp$location == "Sonsorol"]),
+                       Fanna = unique(tmp$taxon_valid_name[tmp$location == "Fanna"]),
+                       `Pulo Anna` = unique(tmp$taxon_valid_name[tmp$location == "Pulo Anna"]),
+                       Merir = unique(tmp$taxon_valid_name[tmp$location == "Merir"]))
+
+ggVennDiagram::ggVennDiagram(taxa_by_island, 
+                             show_intersect = TRUE,
+                             label = "both",
+                             label_color = "white")
+
+unique_taxa <- ggVennDiagram::process_region_data(ggVennDiagram::Venn(taxa_by_island)) |> 
+  filter(name %in% c("Helen", "Tobi", "Sonsorol", "Fanna", "Pulo Anna", "Merir")) |> 
+  unnest(item)
 ```
 
 ## Abundance
@@ -988,16 +1059,21 @@ tmp_plot <- biomass_by_transect_and_taxa |>
   summarize(gr_m2 = round(mean(gr_m2))) |> 
   mutate(tooltip = c(paste0("Family = ", trophic,
                             "\n Biomass = ", gr_m2))) |> 
+  mutate(trophic = case_when(trophic == "Top-predator" ~ "Top-predators",
+                             trophic == "Lower-carnivore" ~ "Lower-carnivores",
+                             trophic == "Herbivore" ~ "Herbivores",
+                             TRUE ~ trophic)) |> 
   ggplot()+
   ggiraph::geom_col_interactive(aes(x = fct_reorder(depth_strata, gr_m2, sum), 
                                     y = gr_m2, 
-                                    fill = trophic, tooltip = tooltip),
+                                    fill = fct_reorder(trophic, gr_m2, sum), tooltip = tooltip),
                                 show.legend = T)+
   coord_flip()+
   facet_wrap("location", ncol = 1, strip.position = "left")+
   labs(x = "", y = "", fill = "", title = "Average fish biomass by trophic group")+
   ggthemes::theme_hc()+
-  scale_fill_manual(values = ps_palettes$trophic)+
+  scale_fill_manual(values = ps_palettes$trophic,
+                    na.value = "lightgrey")+
   scale_y_continuous(expand = c(0, 0))+
   guides(fill = guide_legend(ncol = 1, position = "right"))+
   theme(legend.text = element_text(size = 6),
@@ -1010,7 +1086,7 @@ tmp_plot <- biomass_by_transect_and_taxa |>
 ggiraph::girafe(ggobj = tmp_plot)
 
 ggsave(tmp_plot, 
-       filename =file.path(exp_path, "figures/fish_biomass_by_trophic_and_strata.pdf"))
+       filename =file.path(exp_path, "figures/fish-surveys/fish_biomass_by_trophic_and_strata.pdf"), height = 6)
 ```
 
 ### By species
@@ -1032,9 +1108,12 @@ tmp_plot <- summary_by_taxa |>
                                       size = gr_m2, 
                                       col = trophic, 
                                       tooltip = tooltip))+
-  scale_color_manual(values = ps_palettes$trophic)+
+  scale_color_manual(values = ps_palettes$trophic, na.value = "lightgrey")+
   scale_y_log10()+
-  labs(y = "Abundance (Ind x 100m2)", x = "Frequency (% station-strata)", col = "Trophic group", size = "Biomass")+
+  labs(y = "Abundance (Ind x 100m2)", 
+       x = "Frequency (% station-strata)", 
+       col = "Trophic group", 
+       size = "Biomass")+
   ggthemes::theme_hc()+
   theme(legend.title.position = "top", legend.position = "right")
 
@@ -1136,7 +1215,7 @@ ggplot() +
   scale_color_manual(values = ps_palettes$location)+
   scale_alpha(range=c(0.6,1))
 
-ggsave(file.path(exp_path, "figures", "fish_biomass_pcoa_by_location.pdf"), width = 10, height = 10)
+ggsave(file.path(exp_path, "figures", "fish-surveys/fish_biomass_pcoa_by_location.pdf"), width = 10, height = 10)
 ```
 
 ```{r pcoa_anova, include = T, eval = T}
