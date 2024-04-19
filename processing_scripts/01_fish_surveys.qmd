@@ -1102,6 +1102,10 @@ tmp_plot <- summary_by_taxa |>
                             "\n Frequency (% sites) = ", freq,
                             "\n Abundance (ind/100m2) = ", ind_100m2,
                             "\n Biomass (g/m2) = ", gr_m2))) |> 
+    mutate(trophic = case_when(trophic == "Top-predator" ~ "Top-predators",
+                             trophic == "Lower-carnivore" ~ "Lower-carnivores",
+                             trophic == "Herbivore" ~ "Herbivores",
+                             TRUE ~ trophic)) |> 
   ggplot()+
   ggiraph::geom_point_interactive(aes(x = freq, 
                                       y = ind_100m2, 
