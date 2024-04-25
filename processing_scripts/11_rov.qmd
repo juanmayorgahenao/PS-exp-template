@@ -44,13 +44,24 @@ rov_fieldbook <- readxl::read_excel(file.path(exp_path,
   janitor::clean_names()
 
 rov_dives <- rov_fieldbook |>  
-  rename(ps_site_id = ps_station_id) |> 
-  mutate(expedition = exp_id, 
+  rename(ps_site_id = ps_station_id,
+         dive_type = type) |> 
+  mutate(ps_expedition_id = exp_id, 
          method = "ROV",
+         sublocation = NA_character_,
          team_lead = "Alyssa Adler",
          across(c(date), lubridate::ymd),
+         across(c(lat_in, lat_out, lon_in, lon_out), round, 5),
          across(c(time_in, time_out), hms::as_hms),
-         dive_duration_hr = round(as.numeric((time_out - time_in)/60/60), 2))
+         mutate(across(c(time_in, time_out), ~lubridate::as_datetime(., tz = "Pacific/Palau"))),
+         dive_duration_hr = round(as.numeric((time_out - time_in)/60/60), 2)) |> 
+    select(ps_expedition_id, method, ps_site_id, location, sublocation, date, time_in, time_out, dive_duration_hr, lon_in, lat_in, lon_out, lat_out, max_depth_m, dive_type, team_lead, notes, highlights) 
+
+date(rov_dives$time_in) <- rov_dives$date
+date(rov_dives$time_out) <- rov_dives$date
+
+rov_dives$time_in <- with_tz(rov_dives$time_in, "UTC")
+rov_dives$time_out <- with_tz(rov_dives$time_out, "UTC")
 
 rov_transects <- readxl::read_excel(file.path(exp_path, 
                                         paste0("data/primary/raw/rov/",
@@ -65,14 +76,22 @@ rov_transects <- readxl::read_excel(file.path(exp_path,
   mutate(across(c(start_time, end_time), hms::as_hms)) |> 
   select(ps_site_id, transect_id, transect_depth_m, transect_start_time = start_time, transect_end_time = end_time, bottom_type, transect_notes = notes)
 
-rov_meta <- rov_dives |>   
-  select(expedition, method, ps_site_id, location, date, time_in, lon_in, lat_in, time_out, lon_out, lat_out, max_depth_m, dive_duration_hr, dive_type = type, team_lead, notes, highlights) |> 
+rov_transects <- rov_dives |> 
   full_join(rov_transects) |> 
-  relocate(c(notes, highlights, team_lead), .after = last_col())
+  relocate(c(team_lead, notes, highlights), .after = last_col())
+
+exp_info <- read_csv(file.path(ps_science_path, "data-management/expeditions.csv")) |> 
+  janitor::clean_names()
+
+rov_dives |> 
+  left_join(exp_info |> 
+              select(ps_expedition_id = expedition_id, expedition_name)) |> 
+  select(expedition_name, ps_site_id, location , time_in, lon_in, lat_in) |> 
+  write_csv("~/Desktop/pristine_seas_rov_deployments.csv")
 ```
 
 ```{r rov_map, eval = TRUE, include = T}
-tmp <- rov_meta |> 
+tmp <- rov_transects |> 
   filter(!is.na(max_depth_m)) |> 
   st_as_sf(coords = c("lon_in", "lat_in"), crs = 4326) |> 
   group_by(method, ps_site_id, location, max_depth_m, geometry) |> 
@@ -93,7 +112,7 @@ mapview::mapview(tmp,
 ```
 
 ```{r rov_table, eval = TRUE, include = T}
-rov_meta |> 
+rov_transects |> 
   group_by(location) |> 
   summarize(n_stations = n_distinct(ps_site_id),
             hours = sum(dive_duration_hr),
@@ -130,7 +149,7 @@ rov_meta |>
 ```
 
 ```{r rov_NAs, eval = TRUE, include = T}
-naniar::vis_miss(rov_meta)
+naniar::vis_miss(rov_transects)
 ```
 
 ```{r rov_export, eval = F}
