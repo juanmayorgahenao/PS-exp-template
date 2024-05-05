@@ -86,7 +86,7 @@ exp_info <- read_csv(file.path(ps_science_path, "data-management/expeditions.csv
 rov_dives |> 
   left_join(exp_info |> 
               select(ps_expedition_id = expedition_id, expedition_name)) |> 
-  select(expedition_name, ps_site_id, location , time_in, lon_in, lat_in) |> 
+  select(expedition_name, ps_site_id, location , time_in, lon_in, lat_in, max_depth_m) |> 
   write_csv("~/Desktop/pristine_seas_rov_deployments.csv")
 ```
 
