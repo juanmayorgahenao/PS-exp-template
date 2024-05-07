@@ -543,7 +543,8 @@ bigrquery::bq_table_upload("pristine-seas.fish_surveys.observations",
                            values = biomass_by_obs, fields = biomass_by_obs)
 ```
 
-# Location summary
+
+# Expedition Summary
 
 ```{r bq_import, eval = T}
 transects <- tbl(bq_connection, "pristine-seas.fish_surveys.transects") |> 
@@ -612,6 +613,73 @@ summary_by_taxa <- observations |>
   left_join(fish_lut |> 
               distinct(taxon_valid_name, class, order, family, genus, common_family, trophic))
 ```
+
+```{r exp_tbl, eval = T, include = T}
+#| label: tbl-exp-summary
+#| tbl-cap: Summary of results
+#| tbl-cap-location: top
+exp_summary <- summary_by_transect |> 
+  mutate(group = "Overall",
+         var = "Total") |> 
+  group_by(group, var) |> 
+  summarize(sites = n_distinct(ps_site_id[ind_m2 > 0]),
+            n_transects = n(),
+            n_reels = sum(n_reels),
+            n_taxa = mean(n_taxa),
+            ind_m2_avg = mean(ind_m2),
+            ind_m2_sd = sd(ind_m2),
+            gr_m2_avg = mean(gr_m2),
+            gr_m2_sd = sd(gr_m2)) |> 
+  mutate_if(is.numeric, round, 2) 
+
+exp_summary_by_strata <- summary_by_transect |> 
+  mutate(group = "By strata",
+         var = depth_strata) |> 
+  group_by(group, var) |> 
+  summarize(sites = n_distinct(ps_site_id),
+            n_transects = n(),
+            n_reels = sum(n_reels),
+            n_taxa = mean(n_taxa),
+            ind_m2_avg = mean(ind_m2),
+            ind_m2_sd = sd(ind_m2),
+            gr_m2_avg = mean(gr_m2),
+            gr_m2_sd = sd(gr_m2)) |> 
+  mutate_if(is.numeric, round, 2) 
+
+exp_summary_by_exposure <- summary_by_transect |> 
+  mutate(group = "By exposure",
+         var = exposure) |> 
+  group_by(group, var) |> 
+  summarize(sites = n_distinct(ps_site_id),
+            n_transects = n(),
+            n_reels = sum(n_reels),
+            n_taxa = mean(n_taxa),
+            ind_m2_avg = mean(ind_m2),
+            ind_m2_sd = sd(ind_m2),
+            gr_m2_avg = mean(gr_m2),
+            gr_m2_sd = sd(gr_m2)) |> 
+  mutate_if(is.numeric, round, 2) 
+
+bind_rows(exp_summary_by_exposure, exp_summary_by_strata, exp_summary) |> 
+  gt::gt(rowname_col = "var", groupname_col = "group") |> 
+  cols_merge(columns = starts_with("ind_m2"),
+             pattern = "{1} <<({2})>>") |> 
+  cols_merge(columns = starts_with("gr_m2"),
+             pattern = "{1} <<({2})>>") |> 
+  tab_header(title = "Average species richness, abundance, and biomass") |>
+  opt_align_table_header(align = "left") |> 
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_row_groups()) |> 
+  tab_options(ihtml.use_compact_mode = TRUE,
+              data_row.padding = px(5)) |> 
+  cols_label_with(fn = ~str_replace(.x, "n_", "# ") |> 
+                    str_to_title()) |> 
+  cols_label("ind_m2_avg" ~ "Abundance (ind/m2)",
+             "gr_m2_avg" ~ "Biomass (g/m2)") |> 
+  opt_align_table_header(align = "left") 
+```
+
+# Location summary
 
 ```{r summary_tbl, eval = T, include = T}
 #| label: tbl-summary
@@ -1075,7 +1143,7 @@ ggsave(biomass_treemap,
 #| label: tbl-biomass-by-fam
 #| tbl-cap: Aggregate average abundance and biomass by taxonomic family 
 #| tbl-cap-location: top
-tbl_summary_by_taxa <- summary_by_taxa |> 
+(tbl_summary_by_taxa <- summary_by_taxa |> 
   group_by(class, order, family) |> 
   summarize(n_genus = n_distinct(genus),
             n_species = n_distinct(taxon_valid_name),
@@ -1097,7 +1165,7 @@ tbl_summary_by_taxa <- summary_by_taxa |>
                     str_to_title()) |> 
   cols_label("total_abundance" ~ "Abundance (ind/m2)",
              "total_biomass" ~ "Biomass (g/m2)") |> 
-  opt_align_table_header(align = "left") 
+  opt_align_table_header(align = "left") )
 
 gt::gtsave(tbl_summary_by_taxa, 
            filename = file.path(exp_path, "tables", "fish-surveys/summary_by_family.docx"))
@@ -1229,8 +1297,32 @@ tmp_plot <- summary_by_taxa |>
 ggiraph::girafe(ggobj = tmp_plot)
 ```
 
-```{r}
-summary_by_taxa
+```{r top_30_species,  include = T, eval = T}
+#| label: tbl-top-sp
+#| tbl-cap: Top 30 fish species
+#| tbl-cap-location: top
+summary_by_taxa |> 
+  arrange(desc(gr_m2)) |> 
+  slice_head(n = 30) |> 
+  select(-class, -order, -family, -genus) |> 
+  gt(groupname_col = "trophic", rowname_col = "common_family") |> 
+  tab_stubhead(label = "Trophic/Family") |> 
+  gt::tab_header(title = "Top 30 fish species with highest contribution to overall fish biomass") |> 
+  opt_align_table_header(align = "left") |> 
+  tab_style(style = cell_text(align = "left", indent = px(20)),
+            locations = cells_stub()) |> 
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_row_groups()) |> 
+  tab_options(ihtml.use_compact_mode = TRUE,
+              data_row.padding = px(5)) |> 
+  cols_label("taxon_valid_name" ~ "Taxon",
+             "min_tl_cm" ~ "Min length (cm)",
+             "mean_tl_cm" ~ "Mean length (cm)",
+             "max_tl_cm" ~ "Max length (cm)",
+             "freq" ~ "Frequency (% stations)",
+             "ind_m2" ~ "Abundance (ind/m2)",
+             "gr_m2" ~ "Biomass (g/m2)") |> 
+  opt_align_table_header(align = "left")
 ```
 
 ### Community assemblages
