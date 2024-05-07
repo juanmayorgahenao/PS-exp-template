@@ -543,7 +543,6 @@ bigrquery::bq_table_upload("pristine-seas.fish_surveys.observations",
                            values = biomass_by_obs, fields = biomass_by_obs)
 ```
 
-
 # Expedition Summary
 
 ```{r bq_import, eval = T}
@@ -667,6 +666,9 @@ bind_rows(exp_summary_by_exposure, exp_summary_by_strata, exp_summary) |>
   cols_merge(columns = starts_with("gr_m2"),
              pattern = "{1} <<({2})>>") |> 
   tab_header(title = "Average species richness, abundance, and biomass") |>
+   tab_footnote(
+    footnote = "Standard deviation in parenthesis",
+    cells_column_labels(columns = c(ind_m2_avg, gr_m2_avg))) |> 
   opt_align_table_header(align = "left") |> 
   tab_style(style = cell_text(weight = "bold"),
             locations = cells_row_groups()) |> 
@@ -721,7 +723,7 @@ gt::gtsave(tbl_summary1,
 
 # Analyses 
 
-## Diversity
+## Richness
 
 ```{r treemap, include = T, eval = T}
 #| label: fig-richness-treemap
@@ -808,7 +810,7 @@ ggstatsplot::ggbetweenstats(data = summary_by_transect,
                             x = location, 
                             y = n_taxa, 
                             type = "nonparametric",
-                            title = "Species diversity by island", 
+                            title = "Species richness by island", 
                             xlab = "", ylab = "Number of species per transect",
                             ggplot.component = list(scale_color_manual(values = ps_palettes$location)))
 
@@ -1060,7 +1062,6 @@ gt::gtsave(tbl_biomass_by_exposure,
            filename = file.path(exp_path, "tables", "fish-surveys/summary_by_location_and_exposure.docx"))
 ```
 
-
 ### By family
 
 ```{r biomass_by_fam, include = T, eval = T}
@@ -1139,6 +1140,9 @@ ggsave(biomass_treemap,
        width = 10)
 ```
 
+
+
+
 ```{r biomas_tbl_by_fam}
 #| label: tbl-biomass-by-fam
 #| tbl-cap: Aggregate average abundance and biomass by taxonomic family 
@@ -1149,9 +1153,16 @@ ggsave(biomass_treemap,
             n_species = n_distinct(taxon_valid_name),
             total_abundance = sum(ind_m2),
             total_biomass = sum(gr_m2)) |> 
-  mutate_if(is.numeric, round, 3) |> 
+  ungroup() |> 
+  mutate(total_abundance_pct = 100*total_abundance/sum(total_abundance),
+         total_biomass_pct = 100*total_biomass/sum(total_biomass)) |> 
+  mutate_if(is.numeric, round, 2) |> 
   arrange(desc(total_biomass)) |> 
   gt(groupname_col = "class", rowname_col = "order") |> 
+  cols_merge(columns = starts_with("total_abundance"),
+             pattern = "{1} <<({2} %)>>") |> 
+  cols_merge(columns = starts_with("total_biomass"),
+             pattern = "{1} <<({2} %)>>") |> 
   tab_stubhead(label = "Class/Order") |> 
   gt::tab_header(title = "Number of fish species, aggregate average abundance (ind/m2) and aggregate average biomass (g/m2) by taxonomic family") |> 
   opt_align_table_header(align = "left") |> 
@@ -1165,7 +1176,10 @@ ggsave(biomass_treemap,
                     str_to_title()) |> 
   cols_label("total_abundance" ~ "Abundance (ind/m2)",
              "total_biomass" ~ "Biomass (g/m2)") |> 
-  opt_align_table_header(align = "left") )
+  opt_align_table_header(align = "left") ) |> 
+   tab_footnote(
+    footnote = "Percent contribution in parenthesis",
+    cells_column_labels(columns = c(total_abundance, total_biomass))) 
 
 gt::gtsave(tbl_summary_by_taxa, 
            filename = file.path(exp_path, "tables", "fish-surveys/summary_by_family.docx"))
@@ -1302,10 +1316,17 @@ ggiraph::girafe(ggobj = tmp_plot)
 #| tbl-cap: Top 30 fish species
 #| tbl-cap-location: top
 summary_by_taxa |> 
+  mutate(ind_m2_pct = 100*ind_m2/sum(ind_m2),
+         gr_m2_pct = 100*gr_m2/sum(gr_m2)) |> 
+  mutate_if(is.numeric, round, 2) |> 
   arrange(desc(gr_m2)) |> 
   slice_head(n = 30) |> 
-  select(-class, -order, -family, -genus) |> 
+  select(-class, -order, -family, -genus) |>
   gt(groupname_col = "trophic", rowname_col = "common_family") |> 
+  cols_merge(columns = starts_with("ind_m2"),
+             pattern = "{1} <<({2} %)>>") |> 
+  cols_merge(columns = starts_with("gr_m2"),
+             pattern = "{1} <<({2} %)>>") |> 
   tab_stubhead(label = "Trophic/Family") |> 
   gt::tab_header(title = "Top 30 fish species with highest contribution to overall fish biomass") |> 
   opt_align_table_header(align = "left") |> 
@@ -1322,7 +1343,9 @@ summary_by_taxa |>
              "freq" ~ "Frequency (% stations)",
              "ind_m2" ~ "Abundance (ind/m2)",
              "gr_m2" ~ "Biomass (g/m2)") |> 
-  opt_align_table_header(align = "left")
+  opt_align_table_header(align = "left") |> 
+  tab_footnote(footnote = "Percent contribution in parenthesis",
+               cells_column_labels(columns = c(gr_m2, ind_m2))) 
 ```
 
 ### Community assemblages
