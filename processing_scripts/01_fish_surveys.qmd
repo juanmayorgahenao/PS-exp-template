@@ -295,6 +295,7 @@ fish_lut <- fish_lut |>
               select(-status))
 ```
 
+
 ```{r fishbase}
 fishbase_params <- fish_lut %>% 
   pull(taxon_valid_name) %>% 
@@ -352,6 +353,50 @@ fish_lut$a[fish_lut$taxon_code == "APOG.SP"] <- 0.01545
 fish_lut$b[fish_lut$taxon_code == "APOG.SP"] <- 3.12126 # from SIO
 fish_lut$max_length_tl[fish_lut$taxon_code == "APOG.SP"] <- 16
 ```
+
+```{r}
+SIO_fish_data <- read_csv(file.path(ps_science_path, 
+                                         "expeditions", 
+                                         "SLI-2023", 
+                                         "data/primary/raw/fish/Pacific_Indian_LW_params_21Sept2021.csv")) |> 
+  janitor::clean_names() |> 
+  distinct(taxon, taxon_code = new_name, common_family, consumer, trophic, trophic_detailed, family, genus, 
+           lmax_cm, a_cm, b_cm, ltl_rat)
+
+fish_lut <- fish_lut |> 
+  left_join(SIO_fish_data |> 
+              select(taxon_code, a_cm, b_cm, ltl_rat)) 
+  
+na_params <- fish_lut |> 
+  filter(is.na(a_cm)) |> 
+  select(-c(a_cm, b_cm, ltl_rat)) |> 
+  left_join(SIO_fish_data |> 
+              select(taxon_valid_name = taxon, a_cm, b_cm, ltl_rat)) 
+
+fish_lut <- fish_lut |> 
+  filter(!is.na(a_cm)) |> 
+  bind_rows(na_params) 
+
+fish_lut <- fish_lut %>% 
+  group_by(genus) %>% 
+  mutate_at(vars(a_cm, b_cm, ltl_rat), 
+            .funs =  impute.mean) %>% 
+  mutate_all(~ifelse(is.nan(.), NA, .)) %>% 
+  ungroup()
+
+fish_lut |> 
+  filter(is.na(a_cm)) 
+
+fish_lut$a_cm[is.na(fish_lut$a_cm) & str_detect(fish_lut$taxon, "Apogon")] <- 0.01545000
+fish_lut$b_cm[is.na(fish_lut$b_cm) & str_detect(fish_lut$taxon, "Apogon")] <- 3.12126
+fish_lut$ltl_rat[is.na(fish_lut$ltl_rat) & str_detect(fish_lut$taxon, "Apogon")] <- 0.95
+
+fish_lut <- fish_lut |> 
+  mutate(a_cm = coalesce(a_cm, a),
+         b_cm = coalesce(b_cm, b),
+         ltl_rat = coalesce(ltl_rat, 1)) 
+```
+
 
 ```{r trophic_groups}
 fish_trophic_group_SIO <- read_csv(file.path(ps_science_path, 
@@ -452,7 +497,7 @@ fish_lut <- fish_lut |>
 fish_lut |> 
   create_agent(label = "Validate taxa list",
                action = action_levels(warn_at = 1)) |> 
-  rows_complete(columns = c(taxon_code, taxon_valid_name, max_length_tl, a, b, common_family, consumer, trophic, trophic_detailed)) |> 
+  rows_complete(columns = c(taxon_code, taxon_valid_name, max_length_tl, a, b, a_cm, b_cm, ltl_rat, common_family, consumer, trophic, trophic_detailed)) |> 
   rows_distinct(columns = c(taxon_code)) |> 
   interrogate()
 ```
@@ -506,7 +551,7 @@ fish_obs <- bind_rows(amf_fish_obs, aaf_fish_obs) |>
 
 fish_obs <- fish_obs |> 
   left_join(fish_lut |> 
-              select(taxon_code, taxon_valid_name, max_length_tl, a, b, common_family, trophic))
+              select(taxon_code, taxon_valid_name, max_length_tl, a_cm, b_cm, ltl_rat, common_family, trophic))
 ```
 
 ```{r obs_qc}
@@ -531,16 +576,19 @@ biomass_by_obs <- fish_obs |>
                                      avg_tl_cm))) |> 
   select(-max_length_tl) |> 
   mutate(ps_expedition_id = "PLW_2024",
-         biomass_gr = n_ind*a*(avg_tl_cm)^b,
+         biomass_gr = n_ind*a_cm*(avg_tl_cm*ltl_rat)^b_cm,
          ind_m2 = if_else(avg_tl_cm <= 20, n_ind/50, n_ind/100),
          gr_m2 = if_else(avg_tl_cm <= 20, biomass_gr/50, biomass_gr/100)) |> 
   select(ps_expedition_id, ps_site_id, depth_strata, depth_m, diver, reel, taxon_valid_name, avg_tl_cm, n_ind, ind_m2, biomass_gr, gr_m2) 
 
-bq_table_create("pristine-seas.fish_surveys.observations", 
-                fields = as_bq_fields(biomass_by_obs))
+write_csv(biomass_by_obs, 
+         file.path(exp_path, "data/primary/processed/fish_observations.csv"))
 
-bigrquery::bq_table_upload("pristine-seas.fish_surveys.observations",
-                           values = biomass_by_obs, fields = biomass_by_obs)
+# bq_table_create("pristine-seas.fish_surveys.observations", 
+#                 fields = as_bq_fields(biomass_by_obs))
+# 
+# bigrquery::bq_table_upload("pristine-seas.fish_surveys.observations",
+#                            values = biomass_by_obs, fields = biomass_by_obs)
 ```
 
 # Expedition Summary
@@ -550,11 +598,13 @@ transects <- tbl(bq_connection, "pristine-seas.fish_surveys.transects") |>
   filter(ps_expedition_id == exp_id) |> 
   collect()
 
-observations <- tbl(bq_connection, "pristine-seas.fish_surveys.observations") |> 
-  filter(ps_expedition_id == exp_id) |> 
-  collect()
+# observations <- tbl(bq_connection, "pristine-seas.fish_surveys.observations") |> 
+#   filter(ps_expedition_id == exp_id) |> 
+#   collect()
 
 fish_lut <- read_csv(file.path(exp_path, "data/primary/processed/fish_taxa_lut.csv"))
+
+observations <- read_csv(file.path(exp_path, "data/primary/processed/fish_observations.csv"))
 ```
 
 ```{r summarize, eval = T}
@@ -1230,6 +1280,43 @@ ggsave(plot = tmp_plot,
 ```
 
 ### By trophic group
+
+```{r}
+biomass_by_transect_and_trophic <- biomass_by_transect_and_taxa |> 
+  left_join(fish_lut |>
+              distinct(taxon_valid_name, trophic)) |>
+  group_by(ps_site_id, depth_strata, diver, trophic) |> 
+  summarize(ind_m2  = sum(ind_m2), 
+            gr_m2 = sum(gr_m2)) |> 
+  ungroup() 
+  
+biomass_by_location_and_trophic <- biomass_by_transect_and_trophic |> 
+  left_join(transects |> distinct(ps_site_id, location)) |> 
+  group_by(location, trophic) |> 
+  summarise(ind_m2  = mean(ind_m2),
+            gr_m2 = mean(gr_m2)) |> 
+  ungroup()  
+  
+biomass_by_trophic <- biomass_by_transect_and_trophic |> 
+  left_join(transects |> distinct(ps_site_id, location)) |> 
+  group_by(trophic) |> 
+  summarise(ind_m2  = mean(ind_m2),
+            gr_m2 = mean(gr_m2)) |> 
+  ungroup() 
+
+biomass_by_location_and_trophic |> 
+  select(-ind_m2) |> 
+  pivot_wider(names_from = location, values_from = gr_m2) |> 
+  left_join(biomass_by_trophic |> 
+              select(-ind_m2)) |> 
+  rename(Overall = gr_m2) |> 
+  mutate(exp = "SLI") |> 
+  mutate_if(is.numeric, round, 2) |> 
+  gt::gt(rowname_col = "trophic", groupname_col = "exp") |>  
+  gt::summary_rows(columns = contains(c("H", "F", "M", "S", "T", "P", "O")),
+               fns = list(list(label = md("*Total*"), fn = "sum")),
+               fmt = ~ fmt_number(., decimals = 0, use_seps = FALSE)) 
+```
 
 ```{r biomas_bar_by_trophic, include = T, eval = T}
 #| label: fig-biomass-bar-trophic
